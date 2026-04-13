@@ -1,0 +1,25 @@
+{
+  "name": "@colony-harness/trace-otel",
+  "version": "0.1.0",
+  "description": "OpenTelemetry trace exporter bridge for colony-harness",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "^1.9.0",
+    "colony-harness": "workspace:*"
+  }
+}
