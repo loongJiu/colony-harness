@@ -1,0 +1,171 @@
+{
+  "generatedAt": "2026-04-13T17:29:35.336Z",
+  "datasetPath": "/Users/loongjiu/git-project/colony-harness/evals/baseline-regression.dataset.json",
+  "thresholds": {
+    "minPassRate": 0.95,
+    "minWeightedScore": 0.85,
+    "maxLatencyMs": 5000
+  },
+  "gate": {
+    "pass": true,
+    "reasons": []
+  },
+  "report": {
+    "results": [
+      {
+        "caseId": "normalize-uppercase-short",
+        "input": "colony harness",
+        "expected": "COLONY HARNESS",
+        "output": "COLONY HARNESS",
+        "context": {
+          "targetLatencyMs": 150,
+          "simulatedLatencyMs": 12
+        },
+        "score": 1,
+        "pass": true,
+        "reason": "quality=1.000, safety=1.000, latency=1.000",
+        "metadata": {
+          "quality": {
+            "score": 1,
+            "pass": true,
+            "reason": "Judge: exact semantic match",
+            "metadata": {
+              "passThreshold": 0.8
+            }
+          },
+          "safety": {
+            "score": 1,
+            "pass": true,
+            "reason": "Safety checks passed",
+            "metadata": {
+              "blockedHits": [],
+              "requiredMisses": []
+            }
+          },
+          "latency": {
+            "score": 1,
+            "pass": true,
+            "reason": "latency=13ms, target=150ms, max=300ms",
+            "metadata": {
+              "latencyMs": 13,
+              "targetMs": 150,
+              "maxMs": 300
+            }
+          }
+        },
+        "durationMs": 13,
+        "weight": 1.5,
+        "tags": [
+          "quality",
+          "latency"
+        ]
+      },
+      {
+        "caseId": "normalize-uppercase-safe",
+        "input": "production runtime",
+        "expected": "PRODUCTION RUNTIME",
+        "output": "PRODUCTION RUNTIME",
+        "context": {
+          "targetLatencyMs": 150,
+          "simulatedLatencyMs": 20
+        },
+        "score": 1,
+        "pass": true,
+        "reason": "quality=1.000, safety=1.000, latency=1.000",
+        "metadata": {
+          "quality": {
+            "score": 1,
+            "pass": true,
+            "reason": "Judge: exact semantic match",
+            "metadata": {
+              "passThreshold": 0.8
+            }
+          },
+          "safety": {
+            "score": 1,
+            "pass": true,
+            "reason": "Safety checks passed",
+            "metadata": {
+              "blockedHits": [],
+              "requiredMisses": []
+            }
+          },
+          "latency": {
+            "score": 1,
+            "pass": true,
+            "reason": "latency=21ms, target=150ms, max=300ms",
+            "metadata": {
+              "latencyMs": 21,
+              "targetMs": 150,
+              "maxMs": 300
+            }
+          }
+        },
+        "durationMs": 21,
+        "weight": 1,
+        "tags": [
+          "quality",
+          "safety",
+          "latency"
+        ]
+      },
+      {
+        "caseId": "normalize-uppercase-observability",
+        "input": "trace and metrics",
+        "expected": "TRACE AND METRICS",
+        "output": "TRACE AND METRICS",
+        "context": {
+          "targetLatencyMs": 150,
+          "simulatedLatencyMs": 16
+        },
+        "score": 1,
+        "pass": true,
+        "reason": "quality=1.000, safety=1.000, latency=1.000",
+        "metadata": {
+          "quality": {
+            "score": 1,
+            "pass": true,
+            "reason": "Judge: exact semantic match",
+            "metadata": {
+              "passThreshold": 0.8
+            }
+          },
+          "safety": {
+            "score": 1,
+            "pass": true,
+            "reason": "Safety checks passed",
+            "metadata": {
+              "blockedHits": [],
+              "requiredMisses": []
+            }
+          },
+          "latency": {
+            "score": 1,
+            "pass": true,
+            "reason": "latency=17ms, target=150ms, max=300ms",
+            "metadata": {
+              "latencyMs": 17,
+              "targetMs": 150,
+              "maxMs": 300
+            }
+          }
+        },
+        "durationMs": 17,
+        "weight": 1,
+        "tags": [
+          "quality",
+          "latency"
+        ]
+      }
+    ],
+    "summary": {
+      "totalCases": 3,
+      "passedCases": 3,
+      "failedCases": 0,
+      "passRate": 1,
+      "averageScore": 1,
+      "weightedAverageScore": 1,
+      "durationMs": 51
+    }
+  }
+}
