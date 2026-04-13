@@ -1,6 +1,6 @@
 {
   "name": "@colony-harness/tools-builtin",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Built-in tools for colony-harness agents",
   "type": "module",
   "main": "dist/index.js",
@@ -11,7 +11,9 @@
       "default": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "clean": "rm -rf dist",
