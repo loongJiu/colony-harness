@@ -1,0 +1,280 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --vp-font-family-base: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  --vp-font-family-mono: 'IBM Plex Mono', 'SFMono-Regular', monospace;
+
+  --vp-c-brand-1: #0f766e;
+  --vp-c-brand-2: #0d9488;
+  --vp-c-brand-3: #14b8a6;
+  --vp-c-brand-soft: rgba(20, 184, 166, 0.16);
+
+  --vp-c-bg: #f8faf8;
+  --vp-c-bg-alt: #f1f6f3;
+  --vp-c-bg-soft: #ebf2ee;
+  --vp-c-bg-elv: #ffffff;
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(135deg, #115e59 20%, #0ea5e9 45%, #0f766e 80%);
+}
+
+.dark {
+  --vp-c-brand-1: #2dd4bf;
+  --vp-c-brand-2: #5eead4;
+  --vp-c-brand-3: #99f6e4;
+  --vp-c-brand-soft: rgba(45, 212, 191, 0.2);
+
+  --vp-c-bg: #0b1214;
+  --vp-c-bg-alt: #101a1d;
+  --vp-c-bg-soft: #142125;
+  --vp-c-bg-elv: #0f1b1f;
+
+  --vp-home-hero-name-background: linear-gradient(135deg, #99f6e4 15%, #7dd3fc 45%, #5eead4 85%);
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 100% -10%, rgba(14, 165, 233, 0.12), transparent 60%),
+    radial-gradient(900px 560px at -20% 0%, rgba(20, 184, 166, 0.14), transparent 55%),
+    var(--vp-c-bg);
+}
+
+.dark body {
+  background:
+    radial-gradient(1200px 600px at 100% -10%, rgba(56, 189, 248, 0.12), transparent 55%),
+    radial-gradient(900px 560px at -20% 0%, rgba(45, 212, 191, 0.11), transparent 50%),
+    var(--vp-c-bg);
+}
+
+h1,
+h2,
+h3,
+.VPHero .name,
+.VPHero .text,
+.VPFeature .title {
+  font-family: 'Fraunces', Georgia, serif;
+  letter-spacing: 0.01em;
+}
+
+.VPHero {
+  margin-top: 0 !important;
+  padding-top: 22px !important;
+  padding-bottom: 38px !important;
+}
+
+.VPHero .container {
+  position: relative;
+  border: 1px solid rgba(15, 118, 110, 0.2);
+  border-radius: 28px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.72), rgba(235, 246, 243, 0.66));
+  box-shadow:
+    0 20px 60px rgba(9, 46, 43, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  overflow: hidden;
+}
+
+.VPHero .main,
+.VPHero .image {
+  padding: clamp(20px, 4vw, 52px) !important;
+}
+
+.dark .VPHero .container {
+  border-color: rgba(94, 234, 212, 0.24);
+  background: linear-gradient(165deg, rgba(16, 30, 34, 0.9), rgba(12, 21, 24, 0.88));
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(148, 246, 226, 0.1);
+}
+
+.VPHero .container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(140deg, rgba(14, 165, 233, 0.06), transparent 55%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(15, 118, 110, 0.04) 0,
+      rgba(15, 118, 110, 0.04) 1px,
+      transparent 1px,
+      transparent 22px
+    );
+  pointer-events: none;
+}
+
+.dark .VPHero .container::before {
+  background:
+    linear-gradient(140deg, rgba(125, 211, 252, 0.08), transparent 55%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(94, 234, 212, 0.08) 0,
+      rgba(94, 234, 212, 0.08) 1px,
+      transparent 1px,
+      transparent 24px
+    );
+}
+
+.VPHero .name {
+  font-size: clamp(2.2rem, 5vw, 4.2rem) !important;
+}
+
+.VPHero .text {
+  font-size: clamp(1.3rem, 2.1vw, 1.95rem) !important;
+  line-height: 1.2 !important;
+}
+
+.VPHero .tagline {
+  font-size: 1.06rem !important;
+  max-width: 640px;
+}
+
+.VPButton {
+  border-radius: 999px !important;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    background-color 0.22s ease;
+}
+
+.VPButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 26px rgba(15, 118, 110, 0.2);
+}
+
+.VPFeatures {
+  margin-top: 28px !important;
+}
+
+.VPHomeDoc {
+  margin-top: 0 !important;
+}
+
+.VPHomeDoc .container {
+  padding-inline: clamp(16px, 3vw, 40px) !important;
+}
+
+.VPHomeDoc .vp-doc {
+  padding: clamp(16px, 3vw, 30px);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(244, 249, 246, 0.7));
+  border: 1px solid rgba(15, 118, 110, 0.14);
+}
+
+.dark .VPHomeDoc .vp-doc {
+  background: linear-gradient(180deg, rgba(17, 29, 33, 0.86), rgba(13, 23, 26, 0.82));
+  border-color: rgba(94, 234, 212, 0.2);
+}
+
+.VPFeature {
+  border: 1px solid rgba(15, 118, 110, 0.17);
+  border-radius: 18px !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(244, 249, 246, 0.8));
+  box-shadow: 0 14px 34px rgba(11, 31, 29, 0.09);
+  transform: translateY(12px);
+  opacity: 0;
+  animation: card-enter 0.58s ease forwards;
+}
+
+.dark .VPFeature {
+  border-color: rgba(94, 234, 212, 0.2);
+  background: linear-gradient(180deg, rgba(16, 27, 31, 0.92), rgba(13, 22, 25, 0.88));
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
+}
+
+.VPFeature:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.VPFeature:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.VPFeature:nth-child(3) {
+  animation-delay: 0.19s;
+}
+.VPFeature:nth-child(4) {
+  animation-delay: 0.26s;
+}
+.VPFeature:nth-child(5) {
+  animation-delay: 0.33s;
+}
+.VPFeature:nth-child(6) {
+  animation-delay: 0.4s;
+}
+
+.VPFeature:hover {
+  transform: translateY(-5px);
+  transition:
+    transform 0.24s ease,
+    border-color 0.24s ease;
+  border-color: rgba(14, 165, 233, 0.5);
+}
+
+.VPFeature .title {
+  font-size: 1.06rem;
+}
+
+.VPNavBar {
+  backdrop-filter: blur(12px);
+  background: rgba(248, 250, 248, 0.7) !important;
+  border-bottom: 1px solid rgba(15, 118, 110, 0.12) !important;
+}
+
+.dark .VPNavBar {
+  background: rgba(11, 18, 20, 0.62) !important;
+  border-bottom: 1px solid rgba(94, 234, 212, 0.14) !important;
+}
+
+.VPNavBarTitle .title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+}
+
+.vp-doc h2 {
+  border-top: 1px solid rgba(15, 118, 110, 0.16);
+  padding-top: 26px;
+  margin-top: 34px;
+}
+
+.vp-doc h3 {
+  color: var(--vp-c-brand-1);
+}
+
+.vp-doc a {
+  text-underline-offset: 3px;
+}
+
+.vp-doc div[class*='language-'] {
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(10, 29, 27, 0.08);
+}
+
+.vp-doc div[class*='language-']:hover {
+  border-color: rgba(14, 165, 233, 0.42);
+}
+
+@keyframes card-enter {
+  from {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 960px) {
+  .VPHero {
+    margin-top: 0 !important;
+    padding-top: 10px !important;
+  }
+
+  .VPHero .container {
+    border-radius: 22px;
+  }
+
+  .VPHero .main,
+  .VPHero .image {
+    padding: 18px !important;
+  }
+}

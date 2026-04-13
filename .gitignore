@@ -1,10 +1,32 @@
+# Dependencies and build outputs
 node_modules
 .pnpm-store
 .turbo
 dist
 coverage
 *.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env
 .env
 .env.*
+
+# OS / editor artifacts
 .DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Example runtime data
 examples/**/data
+
+# VitePress build/cache artifacts
+docs/.vitepress/cache
+docs/.vitepress/dist

@@ -47,6 +47,10 @@ and this project follows Semantic Versioning.
   - 新增 VitePress 站点配置与文档脚本（`docs:dev/docs:build/docs:preview`）
   - 新增 Docs CI/CD 工作流（PR 构建校验 + main 分支 GitHub Pages 部署）
   - 新增 `Dockerfile.docs` 与 Nginx 配置，支持容器化部署文档站
+- 文档内容增强（上手 + 概念 + 运维）：
+  - 新增 `getting-started-5min`、`environment-variables`、`troubleshooting`
+  - 新增 `runtime-lifecycle`、`guardrails-tool-security`、`cookbook-research-agent`
+  - 扩展 API 参考为参数级说明，并重构文档导航分组
 
 ## [0.1.0] - 2026-04-13
 
