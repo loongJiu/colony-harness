@@ -10,6 +10,7 @@ import type { Guardrails } from '../guard/Guardrails.js'
 import type { TraceHub } from '../trace/TraceHub.js'
 import type { LLMProvider } from '../types/model.js'
 import { createConsoleLogger, type Logger } from '../types/common.js'
+import { GuardBlockedError } from '../errors/index.js'
 
 export type TaskHandler = (ctx: HarnessContext) => Promise<unknown>
 
@@ -59,28 +60,28 @@ export class ColonyHarness extends EventEmitter {
       capability,
     })
 
-    const textInput = typeof input === 'string' ? input : JSON.stringify(input)
-    await this.deps.guardrails.checkInput(textInput, { taskId, agentId, capability })
-
-    const context = createHarnessContext({
-      capability,
-      input,
-      taskId,
-      agentId,
-      sessionId,
-      signal: options?.signal,
-      logger: this.logger,
-      llmProvider: this.deps.llmProvider,
-      toolRegistry: this.deps.toolRegistry,
-      memoryManager: this.deps.memoryManager,
-      traceSession,
-      createLoop: (loopConfig) => new AgenticLoop(loopConfig, this.deps.toolRegistry, traceSession),
-      defaultLoopConfig: this.deps.config.loop,
-      defaultSystemPrompt: this.deps.config.defaultSystemPrompt,
-      emitEvent: (eventName, ...args) => this.emit(eventName, ...args),
-    })
-
     try {
+      const textInput = typeof input === 'string' ? input : JSON.stringify(input)
+      await this.deps.guardrails.checkInput(textInput, { taskId, agentId, capability })
+
+      const context = createHarnessContext({
+        capability,
+        input,
+        taskId,
+        agentId,
+        sessionId,
+        signal: options?.signal,
+        logger: this.logger,
+        llmProvider: this.deps.llmProvider,
+        toolRegistry: this.deps.toolRegistry,
+        memoryManager: this.deps.memoryManager,
+        traceSession,
+        createLoop: (loopConfig) => new AgenticLoop(loopConfig, this.deps.toolRegistry, traceSession),
+        defaultLoopConfig: this.deps.config.loop,
+        defaultSystemPrompt: this.deps.config.defaultSystemPrompt,
+        emitEvent: (eventName, ...args) => this.emit(eventName, ...args),
+      })
+
       const output = await handler(context)
       const normalizedOutput = typeof output === 'string' ? output : JSON.stringify(output)
       const guardedOutput = await this.deps.guardrails.checkOutput(normalizedOutput, {
@@ -106,6 +107,9 @@ export class ColonyHarness extends EventEmitter {
       this.emit('trace:exported', trace)
       return typeof output === 'string' ? guardedOutput : JSON.parse(guardedOutput)
     } catch (error) {
+      if (error instanceof GuardBlockedError) {
+        this.emit('guard:blocked', error.message)
+      }
       await traceSession.complete({
         messages: this.deps.memoryManager.getWorkingMessages(taskId),
         output: null,

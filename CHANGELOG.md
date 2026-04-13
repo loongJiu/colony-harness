@@ -23,6 +23,11 @@ and this project follows Semantic Versioning.
   - 新增 `@colony-harness/trace-otel`（OpenTelemetry 桥接）
   - 新增 `@colony-harness/trace-langfuse`（Langfuse 导出）
   - 新增 trace 集成测试（metrics 汇总校验）
+- Phase 4（安全与护栏）增强：
+  - 新增 `RateLimitGuard`
+  - 强化 `PIIGuard` 脱敏顺序（避免身份证号被手机号规则破坏）
+  - 修复 `checkInput` 拦截路径未进入统一 trace/错误处理的问题
+  - 新增 Guardrails 测试覆盖（注入、PII、token、敏感词、限流、事件/trace）
 
 ## [0.1.0] - 2026-04-13
 

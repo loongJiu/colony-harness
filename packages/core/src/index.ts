@@ -7,7 +7,13 @@ export { InMemoryAdapter } from './memory/InMemoryAdapter.js'
 export { ContextCompressor } from './memory/ContextCompressor.js'
 export { TraceHub } from './trace/TraceHub.js'
 export { Guardrails } from './guard/Guardrails.js'
-export { PromptInjectionGuard, PIIGuard, TokenLimitGuard, SensitiveWordGuard } from './guard/builtin.js'
+export {
+  PromptInjectionGuard,
+  PIIGuard,
+  TokenLimitGuard,
+  SensitiveWordGuard,
+  RateLimitGuard,
+} from './guard/builtin.js'
 export { createId } from './utils/ids.js'
 
 export * from './types/common.js'
