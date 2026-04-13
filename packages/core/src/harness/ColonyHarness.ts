@@ -15,6 +15,7 @@ import { GuardBlockedError } from '../errors/index.js'
 export type TaskHandler = (ctx: HarnessContext) => Promise<unknown>
 
 export interface RunTaskOptions {
+  taskId?: string
   agentId?: string
   sessionId?: string
   signal?: AbortSignal
@@ -50,7 +51,7 @@ export class ColonyHarness extends EventEmitter {
       throw new Error(`Task handler not found for capability: ${capability}`)
     }
 
-    const taskId = createId('task')
+    const taskId = options?.taskId ?? createId('task')
     const agentId = options?.agentId ?? 'local-agent'
     const sessionId = options?.sessionId ?? 'default-session'
 
@@ -121,7 +122,4 @@ export class ColonyHarness extends EventEmitter {
     }
   }
 
-  async join(_queenUrl: string, _token?: string): Promise<void> {
-    this.logger.info('join() is reserved for colony-bee-sdk integration and is not implemented in MVP yet.')
-  }
 }

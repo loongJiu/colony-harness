@@ -4,6 +4,7 @@
 
 - [getting-started-5min.md](./getting-started-5min.md): 5 分钟跑通闭环
 - [quickstart.md](./quickstart.md): 从零到运行的最小路径
+- [examples-running.md](./examples-running.md): 示例运行专用指南（含讲解与排查）
 - [environment-variables.md](./environment-variables.md): 环境变量参考
 - [troubleshooting.md](./troubleshooting.md): 常见报错排查
 
@@ -12,6 +13,8 @@
 - [runtime-lifecycle.md](./runtime-lifecycle.md): 任务执行生命周期
 - [guardrails-tool-security.md](./guardrails-tool-security.md): 护栏与工具安全模型
 - [architecture.md](./architecture.md): 系统架构与模块拆分
+- [controlplane-modes.md](./controlplane-modes.md): Standalone / ControlPlane 双运行模式
+- [controlplane-compatibility-matrix.md](./controlplane-compatibility-matrix.md): 控制面兼容矩阵
 
 ## 实战与参考
 
@@ -24,3 +27,4 @@
 
 - [changelog-guidelines.md](./changelog-guidelines.md): 变更日志书写规范
 - [release-workflow.md](./release-workflow.md): 标准发布流程
+- [adr/0001-harness-controlplane-boundary.md](./adr/0001-harness-controlplane-boundary.md): 边界冻结 ADR

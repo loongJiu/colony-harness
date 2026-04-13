@@ -12,6 +12,7 @@
 | --- | --- |
 | `llm(provider)` | 注入模型调用器（必需） |
 | `tool(...tools)` | 注册工具 |
+| `toolApproval(callback)` | 设置高风险工具审批回调 |
 | `memory(adapter)` | 指定记忆后端 |
 | `memoryConfig(config)` | 配置记忆策略 |
 | `trace(...exporters)` | 配置 trace 导出器 |
@@ -52,6 +53,7 @@
 
 | 字段 | 说明 |
 | --- | --- |
+| `taskId` | 可选外部任务 ID（用于与控制面任务 ID 对齐） |
 | `agentId` | agent 标识 |
 | `sessionId` | 会话标识 |
 | `signal` | `AbortSignal`，可用于取消 |
@@ -138,6 +140,8 @@
 - `@colony-harness/trace-otel`
 - `@colony-harness/trace-langfuse`
 
+说明：`trace-otel` 会补齐 OpenInference/OTel 关键语义字段（如 `openinference.span.kind`、`session.id`、`user.id`、`input/output.value` 与 `mime_type`）。
+
 ## 6. Built-in Tools
 
 包：`@colony-harness/tools-builtin`
@@ -159,8 +163,11 @@
 | 字段 | 说明 |
 | --- | --- |
 | `file` | 文件工具安全选项（`baseDir`、`allowOutsideBaseDir`） |
-| `runCommand` | 命令工具选项（白名单/黑名单/超时） |
+| `runCommand` | 命令工具选项（白名单/黑名单/超时/风险审批） |
 | `searchProvider` | 自定义搜索 provider |
+
+说明：`run_command` 目前默认采用 allowlist-first 策略，未显式允许的命令会被拒绝。
+说明：`run_command` 支持风险分级与审批配置（`approvalByRisk.requiredFrom + callback`），返回 `audit` 字段用于审计留痕。
 
 ## 7. Evals
 
@@ -186,5 +193,18 @@
 - `containsScorer({ ignoreCase, mode })`
 - `regexScorer({ flags })`
 - `numericRangeScorer()`
+- `llmJudgeScorer({ judge, passThreshold })`
+- `safetyScorer({ blockedPatterns, requiredPatterns })`
+- `latencyScorer({ targetMs, maxMs })`
+- `evaluateGate({ report, thresholds })`
 
 更多示例见 [evals.md](./evals.md)。
+
+说明：OpenAI/Anthropic/Gemini provider 在 `ModelResponse` 层统一返回 `stopReason`（`completed | tool_calls | max_tokens | unknown`）与 `usage` 口径。
+
+## 8. ControlPlane 适配层
+
+- `@colony-harness/controlplane-contract`：统一端口契约
+- `@colony-harness/controlplane-runtime`：任务生命周期桥接
+- `@colony-harness/controlplane-mock-adapter`：本地 mock 适配器
+- `@colony-harness/controlplane-sdk-adapter`：通过 colony-bee-sdk 接 Queen

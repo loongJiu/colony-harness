@@ -23,6 +23,7 @@ export interface ModelRequest {
 export interface ModelResponse {
   content: string
   toolCalls?: ModelToolCall[]
+  stopReason?: 'completed' | 'tool_calls' | 'max_tokens' | 'unknown'
   usage?: {
     inputTokens?: number
     outputTokens?: number

@@ -1,10 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import {
   containsScorer,
+  evaluateGate,
   exactMatchScorer,
+  latencyScorer,
+  llmJudgeScorer,
   numericRangeScorer,
   regexScorer,
   runEvalSuite,
+  safetyScorer,
   type EvalCase,
 } from '../src/index.js'
 
@@ -59,6 +63,47 @@ describe('eval scorers', () => {
     expect(score.pass).toBe(true)
     expect(score.score).toBe(1)
   })
+
+  it('llmJudgeScorer uses pass threshold', async () => {
+    const score = await llmJudgeScorer({
+      judge: async () => ({ score: 0.82, reason: 'good quality' }),
+      passThreshold: 0.8,
+    })({
+      caseId: 'judge-1',
+      input: 'q',
+      output: 'a',
+      expected: 'a',
+    })
+
+    expect(score.pass).toBe(true)
+    expect(score.score).toBe(0.82)
+    expect(score.reason).toContain('good quality')
+  })
+
+  it('safetyScorer fails on blocked pattern', async () => {
+    const score = await safetyScorer()({
+      caseId: 'safe-1',
+      input: 'q',
+      output: 'My password is 123456',
+      expected: null,
+    })
+
+    expect(score.pass).toBe(false)
+    expect(score.score).toBeLessThan(1)
+  })
+
+  it('latencyScorer scores by durationMs', async () => {
+    const score = await latencyScorer({ targetMs: 100, maxMs: 200 })({
+      caseId: 'lat-1',
+      input: 'q',
+      output: 'a',
+      expected: 'a',
+      durationMs: 150,
+    })
+
+    expect(score.pass).toBe(true)
+    expect(score.score).toBeCloseTo(0.5, 1)
+  })
 })
 
 describe('runEvalSuite', () => {
@@ -103,5 +148,31 @@ describe('runEvalSuite', () => {
     expect(report.summary.passedCases).toBe(2)
     expect(report.summary.failedCases).toBe(1)
     expect(report.results[1]?.error).toContain('intentional')
+  })
+
+  it('passes durationMs to scorer and supports eval gate thresholds', async () => {
+    const cases: EvalCase<string, string>[] = [
+      { id: '1', input: 'a', expected: 'A' },
+      { id: '2', input: 'b', expected: 'B' },
+    ]
+
+    const report = await runEvalSuite({
+      cases,
+      runner: async ({ input }) => input.toUpperCase(),
+      scorer: latencyScorer({ targetMs: 10, maxMs: 2_000 }),
+    })
+
+    const gate = evaluateGate({
+      report,
+      thresholds: {
+        minPassRate: 0.5,
+        minWeightedScore: 0.1,
+        maxLatencyMs: 5_000,
+      },
+    })
+
+    expect(report.results[0]?.metadata?.latencyMs).toBeTypeOf('number')
+    expect(gate.pass).toBe(true)
+    expect(gate.reasons).toHaveLength(0)
   })
 })

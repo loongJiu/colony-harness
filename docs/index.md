@@ -40,9 +40,12 @@ features:
 ## 快速路径
 
 - 新接入项目：先看 [5 分钟跑通](./getting-started-5min.md)
+- 想直接跑仓库示例：看 [示例运行指南](./examples-running.md)
 - 需要接真实模型：看 [环境变量参考](./environment-variables.md)
 - 遇到 CI 或构建异常：看 [常见问题排查](./troubleshooting.md)
 - 需要理解内部机制：看 [运行生命周期](./runtime-lifecycle.md)
+- 需要接 Queen：看 [双运行模式](./controlplane-modes.md)
+- 发布前确认版本组合：看 [ControlPlane 兼容矩阵](./controlplane-compatibility-matrix.md)
 
 ## 深入与维护
 

@@ -30,6 +30,11 @@
 - `@colony-harness/llm-gemini`
 - `@colony-harness/tools-builtin`
 - `@colony-harness/evals`
+- `@colony-harness/controlplane-contract`
+- `@colony-harness/controlplane-mock-adapter`
+- `@colony-harness/controlplane-runtime`
+- `@colony-harness/controlplane-sdk-adapter`
+- `@colony-harness/provider-contract-tests`
 - `examples/basic-agent` / `examples/memory-agent`
 - 单元与集成测试（loop + tools + memory）
 
@@ -50,10 +55,16 @@ colony-harness/
 │   ├── llm-openai-compatible/# OpenAI 协议兼容模型调用器
 │   ├── llm-anthropic/        # Anthropic Claude 调用器
 │   ├── llm-gemini/           # Google Gemini 调用器
-│   └── evals/                # 评测执行器与 scorer
+│   ├── evals/                # 评测执行器与 scorer
+│   ├── controlplane-contract/# 控制面抽象契约（接口与事件模型）
+│   ├── controlplane-mock-adapter/ # 控制面 mock 适配器（本地与测试）
+│   ├── controlplane-runtime/ # controlplane 与 core 运行时桥接
+│   ├── controlplane-sdk-adapter/ # 基于 colony-bee-sdk 的控制面适配器
+│   └── provider-contract-tests/ # 多 provider tool-calling 契约测试矩阵
 ├── examples/
 │   ├── basic-agent/          # 最小可运行示例
-│   └── memory-agent/         # 记忆与语义检索示例
+│   ├── memory-agent/         # 记忆与语义检索示例
+│   └── queen-agent-via-sdk/  # 通过 sdk-adapter 接入控制面示例
 ├── docs/
 └── .github/
 ```
@@ -84,6 +95,7 @@ pnpm test
 ```bash
 pnpm --filter @colony-harness/example-basic-agent dev
 pnpm --filter @colony-harness/example-memory-agent dev
+pnpm --filter @colony-harness/example-queen-agent-via-sdk dev
 # 使用 SQLite 作为 memory backend（可选）
 MEMORY_BACKEND=sqlite pnpm --filter @colony-harness/example-memory-agent dev
 ```
@@ -92,6 +104,7 @@ MEMORY_BACKEND=sqlite pnpm --filter @colony-harness/example-memory-agent dev
 
 - 文档首页: [docs/index.md](./docs/index.md)
 - 5 分钟跑通: [docs/getting-started-5min.md](./docs/getting-started-5min.md)
+- 示例运行指南: [docs/examples-running.md](./docs/examples-running.md)
 - 架构设计: [docs/architecture.md](./docs/architecture.md)
 - Quickstart: [docs/quickstart.md](./docs/quickstart.md)
 - 环境变量参考: [docs/environment-variables.md](./docs/environment-variables.md)
@@ -197,9 +210,24 @@ console.log(output)
 
 - 评测执行器 `runEvalSuite()`
 - 内置 scorer：`exactMatchScorer`、`containsScorer`、`regexScorer`、`numericRangeScorer`
+- 高价值 scorer：`llmJudgeScorer`、`safetyScorer`、`latencyScorer`
 - 标准化结果报告：`results + summary(passRate/averageScore/weightedAverageScore)`
 
 详细说明见 [docs/evals.md](./docs/evals.md)。
+
+## Eval Gate（发布门禁）
+
+仓库内置 eval 门禁脚本（读取 `evals/baseline-regression.dataset.json`）：
+
+```bash
+pnpm eval:gate
+```
+
+可通过环境变量调整阈值：
+
+- `EVAL_GATE_MIN_PASS_RATE`（默认 `0.95`）
+- `EVAL_GATE_MIN_WEIGHTED_SCORE`（默认 `0.85`）
+- `EVAL_GATE_MAX_DURATION_MS`（默认 `5000`）
 
 ## 发布脚本
 
@@ -231,8 +259,13 @@ console.log(output)
 
 ## 与 colony-bee-sdk 的关系
 
-当前 MVP 采用与 `colony-bee-sdk` 一致的能力抽象（Task/Loop/Tool/Memory/Trace）来构建 Harness 层。
-在后续版本中，`join()` 与 BeeAgent 的深度集成将按 roadmap 持续增强。
+`colony-harness` 默认保持独立运行，不内置任何控制面接入实现。
+当需要接入 `colony-bee-sdk` / Queen 时，建议通过适配器层组合：
+
+- 契约层：`@colony-harness/controlplane-contract`
+- 测试与本地模拟：`@colony-harness/controlplane-mock-adapter`
+- 运行时桥接：`@colony-harness/controlplane-runtime`
+- SDK 接入：`@colony-harness/controlplane-sdk-adapter`
 
 ## 开源维护
 

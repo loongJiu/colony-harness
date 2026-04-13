@@ -33,6 +33,8 @@
 
 ## 4. `run_command` 最小安全配置
 
+当前内置 `run_command` 默认采用 allowlist-first（未允许命令默认拒绝），建议继续显式收敛到业务所需命令集。
+
 ```ts
 import { createRunCommandTool } from '@colony-harness/tools-builtin'
 
@@ -40,9 +42,18 @@ const runCommand = createRunCommandTool({
   allowShell: false,
   allowedCommands: ['node', 'pnpm'],
   blockedCommands: ['rm', 'mkfs', 'shutdown'],
+  approvalByRisk: {
+    requiredFrom: 'medium',
+    callback: async ({ command, riskLevel }) => {
+      // 接入你的审批中心（工单/人工确认）
+      return command === 'node' && riskLevel !== 'high'
+    },
+  },
   defaultTimeoutMs: 5000,
 })
 ```
+
+执行成功返回包含 `audit` 字段（command/args/riskLevel/duration/cwd/timestamp），用于审计留痕。
 
 ## 5. 文件工具最小安全配置
 

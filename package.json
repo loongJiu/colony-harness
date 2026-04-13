@@ -17,7 +17,9 @@
     "docs:preview": "vitepress preview docs --host 0.0.0.0 --port 4173",
     "release": "node scripts/release.mjs",
     "release:dry-run": "node scripts/release.mjs --dry-run",
+    "check:core-boundary": "node scripts/check-core-boundary.mjs",
     "test": "turbo run test",
+    "eval:gate": "pnpm --filter @colony-harness/evals build && node scripts/eval-gate.mjs",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint"
   },

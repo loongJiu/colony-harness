@@ -28,6 +28,9 @@ jobs:
       - name: Install deps
         run: pnpm install
 
+      - name: Core Boundary Check
+        run: pnpm check:core-boundary
+
       - name: Build
         run: pnpm build
 
@@ -36,3 +39,6 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+      - name: Eval Gate
+        run: pnpm eval:gate

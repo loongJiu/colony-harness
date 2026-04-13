@@ -1,0 +1,37 @@
+{
+  "cases": [
+    {
+      "id": "normalize-uppercase-short",
+      "input": "colony harness",
+      "expected": "COLONY HARNESS",
+      "context": {
+        "targetLatencyMs": 150,
+        "simulatedLatencyMs": 12
+      },
+      "weight": 1.5,
+      "tags": ["quality", "latency"]
+    },
+    {
+      "id": "normalize-uppercase-safe",
+      "input": "production runtime",
+      "expected": "PRODUCTION RUNTIME",
+      "context": {
+        "targetLatencyMs": 150,
+        "simulatedLatencyMs": 20
+      },
+      "weight": 1,
+      "tags": ["quality", "safety", "latency"]
+    },
+    {
+      "id": "normalize-uppercase-observability",
+      "input": "trace and metrics",
+      "expected": "TRACE AND METRICS",
+      "context": {
+        "targetLatencyMs": 150,
+        "simulatedLatencyMs": 16
+      },
+      "weight": 1,
+      "tags": ["quality", "latency"]
+    }
+  ]
+}

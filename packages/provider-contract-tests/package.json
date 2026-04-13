@@ -1,0 +1,22 @@
+{
+  "name": "@colony-harness/provider-contract-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cross-provider contract tests for tool-calling normalization",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@colony-harness/llm-anthropic": "workspace:*",
+    "@colony-harness/llm-gemini": "workspace:*",
+    "@colony-harness/llm-openai": "workspace:*",
+    "colony-harness": "workspace:*"
+  }
+}

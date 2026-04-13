@@ -21,6 +21,7 @@ const zhThemeConfig = {
         { text: '文档首页', link: '/' },
         { text: '5 分钟跑通', link: '/getting-started-5min' },
         { text: 'Quickstart', link: '/quickstart' },
+        { text: '示例运行指南', link: '/examples-running' },
         { text: '环境变量参考', link: '/environment-variables' },
         { text: '常见问题排查', link: '/troubleshooting' },
       ],
@@ -31,6 +32,8 @@ const zhThemeConfig = {
         { text: '运行生命周期', link: '/runtime-lifecycle' },
         { text: 'Guardrails 与工具安全', link: '/guardrails-tool-security' },
         { text: 'Architecture', link: '/architecture' },
+        { text: '双运行模式', link: '/controlplane-modes' },
+        { text: '兼容矩阵', link: '/controlplane-compatibility-matrix' },
       ],
     },
     {
@@ -47,6 +50,7 @@ const zhThemeConfig = {
       items: [
         { text: 'Changelog Guidelines', link: '/changelog-guidelines' },
         { text: 'Release Workflow', link: '/release-workflow' },
+        { text: 'ADR: 边界冻结', link: '/adr/0001-harness-controlplane-boundary' },
       ],
     },
   ],
@@ -89,6 +93,7 @@ const enThemeConfig = {
         { text: 'Docs Home', link: '/en/' },
         { text: 'Get Running in 5 Minutes', link: '/en/getting-started-5min' },
         { text: 'Quickstart', link: '/en/quickstart' },
+        { text: 'Running the Examples', link: '/en/examples-running' },
         { text: 'Environment Variables', link: '/en/environment-variables' },
         { text: 'Troubleshooting', link: '/en/troubleshooting' },
       ],
@@ -99,6 +104,8 @@ const enThemeConfig = {
         { text: 'Runtime Lifecycle', link: '/en/runtime-lifecycle' },
         { text: 'Guardrails & Tool Security', link: '/en/guardrails-tool-security' },
         { text: 'Architecture', link: '/en/architecture' },
+        { text: 'Dual Runtime Modes', link: '/en/controlplane-modes' },
+        { text: 'Compatibility Matrix', link: '/en/controlplane-compatibility-matrix' },
       ],
     },
     {
@@ -115,6 +122,7 @@ const enThemeConfig = {
       items: [
         { text: 'Changelog Guidelines', link: '/en/changelog-guidelines' },
         { text: 'Release Workflow', link: '/en/release-workflow' },
+        { text: 'ADR: Boundary Freeze', link: '/adr/0001-harness-controlplane-boundary' },
       ],
     },
   ],

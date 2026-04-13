@@ -10,6 +10,11 @@
   - `containsScorer()`
   - `regexScorer()`
   - `numericRangeScorer()`
+  - `llmJudgeScorer()`
+  - `safetyScorer()`
+  - `latencyScorer()`
+- 门禁能力：
+  - `evaluateGate()`：基于阈值判定发布通过/阻断
 
 ## 快速示例
 
@@ -41,3 +46,18 @@ console.log(report.summary)
 - 对关键业务 case 设置更高 `weight`
 - 使用 `failFast` 在高风险场景尽快终止
 - 将 eval 报告接入 CI，作为发布前回归门禁
+
+## 发布门禁脚本
+
+仓库内置：
+
+```bash
+pnpm eval:gate
+```
+
+默认读取 `evals/baseline-regression.dataset.json`，并输出 `reports/eval-gate-report.json`。  
+你可以通过环境变量覆盖阈值：
+
+- `EVAL_GATE_MIN_PASS_RATE`
+- `EVAL_GATE_MIN_WEIGHTED_SCORE`
+- `EVAL_GATE_MAX_DURATION_MS`

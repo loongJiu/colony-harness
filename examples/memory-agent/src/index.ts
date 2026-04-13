@@ -39,7 +39,7 @@ const main = async () => {
 
   if (backend === 'sqlite') {
     const { SqliteMemoryAdapter } = await import('@colony-harness/memory-sqlite')
-    builder.memory(new SqliteMemoryAdapter('./examples/memory-agent/data/memory.sqlite'))
+    builder.memory(new SqliteMemoryAdapter('./data/memory.sqlite'))
   }
 
   const harness = await builder.build()

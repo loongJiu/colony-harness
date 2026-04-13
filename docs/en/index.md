@@ -40,9 +40,12 @@ features:
 ## Quick Paths
 
 - New to the project: [Get Running in 5 Minutes](./getting-started-5min.md)
+- Want to run repo examples directly: [Running the Examples](./examples-running.md)
 - Connecting real model providers: [Environment Variables](./environment-variables.md)
 - Build/CI issues: [Troubleshooting](./troubleshooting.md)
 - Runtime internals: [Runtime Lifecycle](./runtime-lifecycle.md)
+- Queen integration path: [Dual Runtime Modes](./controlplane-modes.md)
+- Pre-release version checks: [ControlPlane Compatibility Matrix](./controlplane-compatibility-matrix.md)
 
 ## Deep Dive
 

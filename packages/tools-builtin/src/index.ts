@@ -221,9 +221,17 @@ export const createWriteFileTool = (options: FileToolOptions = {}): ToolDefiniti
 })
 
 export interface RunCommandToolOptions {
+  mode?: 'allowlist' | 'blocklist'
   allowShell?: boolean
   allowedCommands?: string[]
+  defaultAllowedCommands?: string[]
   blockedCommands?: string[]
+  highRiskCommands?: string[]
+  mediumRiskCommands?: string[]
+  approvalByRisk?: {
+    requiredFrom?: 'low' | 'medium' | 'high'
+    callback?: (input: { command: string; args: string[]; riskLevel: 'low' | 'medium' | 'high' }) => Promise<boolean> | boolean
+  }
   defaultTimeoutMs?: number
 }
 
@@ -235,6 +243,47 @@ const runCommandInputSchema = z.object({
   env: z.record(z.string()).optional(),
 })
 
+type CommandRiskLevel = 'low' | 'medium' | 'high'
+
+const riskRank: Record<CommandRiskLevel, number> = {
+  low: 0,
+  medium: 1,
+  high: 2,
+}
+
+const detectRiskLevel = (
+  command: string,
+  options: Pick<RunCommandToolOptions, 'highRiskCommands' | 'mediumRiskCommands'>,
+): CommandRiskLevel => {
+  const highRisk = new Set(options.highRiskCommands ?? [
+    'rm',
+    'sudo',
+    'mkfs',
+    'shutdown',
+    'reboot',
+    'dd',
+    'curl',
+    'wget',
+    'ssh',
+    'scp',
+  ])
+  if (highRisk.has(command)) return 'high'
+
+  const mediumRisk = new Set(options.mediumRiskCommands ?? [
+    'bash',
+    'sh',
+    'node',
+    'python',
+    'python3',
+    'pnpm',
+    'npm',
+    'npx',
+    'git',
+  ])
+  if (mediumRisk.has(command)) return 'medium'
+  return 'low'
+}
+
 export const createRunCommandTool = (
   options: RunCommandToolOptions = {},
 ): ToolDefinition => ({
@@ -243,17 +292,34 @@ export const createRunCommandTool = (
   inputSchema: runCommandInputSchema,
   execute: async (rawInput) => {
     const input = runCommandInputSchema.parse(rawInput)
+    const mode = options.mode ?? 'allowlist'
+    const defaultAllowed = options.defaultAllowedCommands ?? ['node', 'pnpm', 'npm', 'npx']
     const blocked = new Set([...(options.blockedCommands ?? ['rm', 'mkfs', 'shutdown'])])
+    const allowed = new Set(options.allowedCommands?.length ? options.allowedCommands : defaultAllowed)
+    const riskLevel = detectRiskLevel(input.command, options)
+    const requiredFrom = options.approvalByRisk?.requiredFrom ?? 'high'
 
     if (blocked.has(input.command)) {
       throw new Error(`Command is blocked: ${input.command}`)
     }
 
-    if (options.allowedCommands?.length && !options.allowedCommands.includes(input.command)) {
+    if (mode === 'allowlist' && !allowed.has(input.command)) {
       throw new Error(`Command is not allowed: ${input.command}`)
     }
 
+    if (riskRank[riskLevel] >= riskRank[requiredFrom] && options.approvalByRisk?.callback) {
+      const approved = await options.approvalByRisk.callback({
+        command: input.command,
+        args: input.args,
+        riskLevel,
+      })
+      if (!approved) {
+        throw new Error(`Command approval rejected: ${input.command} (risk=${riskLevel})`)
+      }
+    }
+
     return new Promise((resolve, reject) => {
+      const startedAt = Date.now()
       const child = spawn(input.command, input.args, {
         cwd: input.cwd ? path.resolve(input.cwd) : process.cwd(),
         shell: options.allowShell ?? false,
@@ -277,7 +343,7 @@ export const createRunCommandTool = (
       const timeout = setTimeout(() => {
         child.kill('SIGTERM')
         reject(new Error(`Command timed out after ${input.timeoutMs}ms`))
-      }, input.timeoutMs || options.defaultTimeoutMs || 15_000)
+      }, input.timeoutMs ?? options.defaultTimeoutMs ?? 15_000)
 
       child.on('error', (error) => {
         clearTimeout(timeout)
@@ -290,6 +356,15 @@ export const createRunCommandTool = (
           code: code ?? -1,
           stdout,
           stderr,
+          audit: {
+            command: input.command,
+            args: input.args,
+            cwd: input.cwd ? path.resolve(input.cwd) : process.cwd(),
+            mode,
+            riskLevel,
+            timestamp: new Date(startedAt).toISOString(),
+            durationMs: Date.now() - startedAt,
+          },
         })
       })
     })
