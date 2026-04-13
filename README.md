@@ -90,8 +90,15 @@ MEMORY_BACKEND=sqlite pnpm --filter @colony-harness/example-memory-agent dev
 
 ## 文档导航
 
+- 文档首页: [docs/index.md](./docs/index.md)
+- 5 分钟跑通: [docs/getting-started-5min.md](./docs/getting-started-5min.md)
 - 架构设计: [docs/architecture.md](./docs/architecture.md)
 - Quickstart: [docs/quickstart.md](./docs/quickstart.md)
+- 环境变量参考: [docs/environment-variables.md](./docs/environment-variables.md)
+- 常见问题排查: [docs/troubleshooting.md](./docs/troubleshooting.md)
+- 运行生命周期: [docs/runtime-lifecycle.md](./docs/runtime-lifecycle.md)
+- Guardrails 与工具安全: [docs/guardrails-tool-security.md](./docs/guardrails-tool-security.md)
+- Cookbook: [docs/cookbook-research-agent.md](./docs/cookbook-research-agent.md)
 - Advanced Guide: [docs/advanced-guide.md](./docs/advanced-guide.md)
 - API Reference: [docs/api-reference.md](./docs/api-reference.md)
 - Evals 使用说明: [docs/evals.md](./docs/evals.md)
@@ -117,7 +124,7 @@ pnpm docs:preview
 GitHub Actions：
 
 - `.github/workflows/docs.yml` 会在 PR 执行文档构建校验
-- 推送到 `main` 时自动部署到 GitHub Pages
+- 推送到 `main/master` 时自动部署到 GitHub Pages
 
 Docker 部署：
 
