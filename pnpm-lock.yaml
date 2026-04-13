@@ -54,11 +54,29 @@ importers:
         specifier: ^3.24.5
         version: 3.25.2(zod@3.25.76)
 
+  packages/llm-anthropic:
+    dependencies:
+      colony-harness:
+        specifier: workspace:*
+        version: link:../core
+
+  packages/llm-gemini:
+    dependencies:
+      colony-harness:
+        specifier: workspace:*
+        version: link:../core
+
   packages/llm-openai:
     dependencies:
       colony-harness:
         specifier: workspace:*
         version: link:../core
+
+  packages/llm-openai-compatible:
+    dependencies:
+      '@colony-harness/llm-openai':
+        specifier: workspace:*
+        version: link:../llm-openai
 
   packages/memory-redis:
     dependencies:
@@ -80,6 +98,15 @@ importers:
       sqlite3:
         specifier: ^5.1.7
         version: 5.1.7
+
+  packages/tools-builtin:
+    dependencies:
+      colony-harness:
+        specifier: workspace:*
+        version: link:../core
+      zod:
+        specifier: ^3.24.4
+        version: 3.25.76
 
   packages/trace-console:
     dependencies:

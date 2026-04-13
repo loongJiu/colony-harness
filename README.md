@@ -13,7 +13,7 @@
 
 ## MVP 状态
 
-当前版本为 `v0.1.0`（MVP），已实现开发计划中 Phase 1 的核心链路，并补充了必要的工程化与开源维护文件。
+当前版本为 `v0.1.0`（MVP），已实现开发计划中 Phase 1-5 的核心链路，并补充了必要的工程化与开源维护文件。
 
 已包含：
 
@@ -25,6 +25,10 @@
 - `@colony-harness/trace-otel`
 - `@colony-harness/trace-langfuse`
 - `@colony-harness/llm-openai`
+- `@colony-harness/llm-openai-compatible`
+- `@colony-harness/llm-anthropic`
+- `@colony-harness/llm-gemini`
+- `@colony-harness/tools-builtin`
 - `examples/basic-agent` / `examples/memory-agent`
 - 单元与集成测试（loop + tools + memory）
 
@@ -40,7 +44,11 @@ colony-harness/
 │   ├── trace-file/           # JSONL 文件导出器
 │   ├── trace-otel/           # OpenTelemetry 导出桥接
 │   ├── trace-langfuse/       # Langfuse 导出器
-│   └── llm-openai/           # OpenAI 兼容模型调用器
+│   ├── tools-builtin/        # 内置工具集
+│   ├── llm-openai/           # OpenAI 模型调用器
+│   ├── llm-openai-compatible/# OpenAI 协议兼容模型调用器
+│   ├── llm-anthropic/        # Anthropic Claude 调用器
+│   └── llm-gemini/           # Google Gemini 调用器
 ├── examples/
 │   ├── basic-agent/          # 最小可运行示例
 │   └── memory-agent/         # 记忆与语义检索示例
@@ -122,6 +130,19 @@ console.log(output)
 - Vitest 单元测试
 - GitHub Actions CI（build/typecheck/test）
 - ISSUE/PR 模板、贡献指南、安全策略、变更日志
+
+## 内置工具
+
+`@colony-harness/tools-builtin` 当前提供：
+
+- `http_request`
+- `read_file`
+- `write_file`
+- `run_command`
+- `search_web`
+- `calculator`
+- `json_query`
+- `template_render`
 
 ## 发布脚本
 

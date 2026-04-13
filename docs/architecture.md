@@ -82,10 +82,14 @@
 - `@colony-harness/trace-otel`: OpenTelemetry 导出桥接
 - `@colony-harness/trace-langfuse`: Langfuse 导出器
 - `@colony-harness/llm-openai`: OpenAI 兼容 provider
+- `@colony-harness/llm-openai-compatible`: OpenAI 协议兼容 provider
+- `@colony-harness/llm-anthropic`: Anthropic provider
+- `@colony-harness/llm-gemini`: Gemini provider
+- `@colony-harness/tools-builtin`: 内置工具集（HTTP/File/Command/Search/JSON/Template）
 
 ## 后续演进方向
 
 - 与 `colony-bee-sdk` 深度运行时集成
 - 工作记忆自动压缩器（context compressor）
 - 多 trace exporter（OTEL、Langfuse）
-- 内置工具集与评测体系
+- 评测体系（datasets + scorers + regression workflow）

@@ -28,6 +28,13 @@ and this project follows Semantic Versioning.
   - 强化 `PIIGuard` 脱敏顺序（避免身份证号被手机号规则破坏）
   - 修复 `checkInput` 拦截路径未进入统一 trace/错误处理的问题
   - 新增 Guardrails 测试覆盖（注入、PII、token、敏感词、限流、事件/trace）
+- 新增多模型 provider 包：
+  - `@colony-harness/llm-openai-compatible`
+  - `@colony-harness/llm-anthropic`
+  - `@colony-harness/llm-gemini`
+- 新增 `@colony-harness/tools-builtin` 内置工具集：
+  - `http_request` / `read_file` / `write_file` / `run_command`
+  - `search_web` / `calculator` / `json_query` / `template_render`
 
 ## [0.1.0] - 2026-04-13
 
