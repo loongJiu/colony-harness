@@ -98,6 +98,34 @@ MEMORY_BACKEND=sqlite pnpm --filter @colony-harness/example-memory-agent dev
 - Changelog 规范: [docs/changelog-guidelines.md](./docs/changelog-guidelines.md)
 - Release Workflow: [docs/release-workflow.md](./docs/release-workflow.md)
 
+## 文档打包与部署
+
+本项目文档基于 VitePress，可直接产出静态部署包。
+
+本地开发与构建：
+
+```bash
+pnpm docs:dev
+pnpm docs:build
+pnpm docs:preview
+```
+
+构建产物目录：
+
+- `docs/.vitepress/dist`
+
+GitHub Actions：
+
+- `.github/workflows/docs.yml` 会在 PR 执行文档构建校验
+- 推送到 `main` 时自动部署到 GitHub Pages
+
+Docker 部署：
+
+```bash
+docker build -f Dockerfile.docs -t colony-harness-docs .
+docker run --rm -p 8080:80 colony-harness-docs
+```
+
 ## 使用示例
 
 ```ts

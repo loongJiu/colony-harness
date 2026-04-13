@@ -10,6 +10,7 @@
    - `pnpm build`
    - `pnpm typecheck`
    - `pnpm test`
+   - `pnpm docs:build`
 
 ## 2. 预演发布
 
@@ -45,3 +46,4 @@ pnpm release -- --version 0.2.0 --tag latest
 1. 推送 commit 与 tag
 2. 在 GitHub 创建 Release Note
 3. 在 README/文档中同步版本里程碑（如有）
+4. 确认 Docs 工作流构建与部署成功（`docs.yml`）

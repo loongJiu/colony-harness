@@ -10,6 +10,7 @@
    - `pnpm build`
    - `pnpm typecheck`
    - `pnpm test`
+   - `pnpm docs:build`
 
 ## 提交流程
 

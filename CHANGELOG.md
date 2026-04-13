@@ -43,6 +43,10 @@ and this project follows Semantic Versioning.
   - 新增 `quickstart`、`advanced-guide`、`api-reference`、`release-workflow`、`changelog-guidelines`
   - README 增加文档导航与发布流程索引
   - CONTRIBUTING 补充 changelog 规范与发布流程引用
+- 文档工程化增强：
+  - 新增 VitePress 站点配置与文档脚本（`docs:dev/docs:build/docs:preview`）
+  - 新增 Docs CI/CD 工作流（PR 构建校验 + main 分支 GitHub Pages 部署）
+  - 新增 `Dockerfile.docs` 与 Nginx 配置，支持容器化部署文档站
 
 ## [0.1.0] - 2026-04-13
 
