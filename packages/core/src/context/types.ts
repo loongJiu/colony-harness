@@ -17,9 +17,11 @@ export interface HarnessContext {
   invokeTool(name: string, input: unknown): Promise<unknown>
   memory: {
     save(key: string, value: unknown): Promise<void>
+    saveSemantic(key: string, value: unknown): Promise<void>
     load(key: string): Promise<unknown>
     search(query: string, topK?: number): Promise<MemoryEntry[]>
     recent(limit?: number): Promise<MemoryEntry[]>
+    clearSession(): Promise<void>
     workingMessages: LoopMessage[]
   }
   parseOutput<T>(schema: ZodSchema<T>, raw: string): Promise<T>

@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog,
 and this project follows Semantic Versioning.
 
+## [Unreleased]
+
+### Added
+
+- Phase 2（记忆与持久化）增强：
+  - `ContextCompressor` 与自动上下文压缩
+  - `MemoryManager.saveSemantic()` 与 `clearSession()`
+  - `HarnessContext.memory.saveSemantic()` 与 `clearSession()`
+  - `HarnessBuilder.memoryConfig()` 配置入口
+- 新增 `@colony-harness/memory-redis` 适配器（Redis 持久化后端）
+- 新增 `examples/memory-agent` 示例（语义记忆写入/检索）
+- 新增记忆模块测试（semantic 检索 + working memory 压缩 + 跨任务集成）
+
 ## [0.1.0] - 2026-04-13
 
 ### Added

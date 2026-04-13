@@ -26,7 +26,7 @@ export class AgenticLoop {
 
   async run(options: AgenticLoopRunOptions): Promise<LoopResult> {
     const { initialMessages, modelCaller, taskId, agentId, signal, hooks } = options
-    const messages = [...initialMessages]
+    let messages = [...initialMessages]
     const toolsInvoked: string[] = []
     let tokenUsage = { input: 0, output: 0 }
     let iterations = 0
@@ -42,6 +42,11 @@ export class AgenticLoop {
       while (iterations < this.config.maxIterations) {
         iterations += 1
         hooks?.onIteration?.(iterations, messages)
+
+        if (hooks?.beforeModelCall) {
+          messages = await hooks.beforeModelCall(messages)
+        }
+
         const iterationSpan = this.tracer.startSpan('loop_iteration', { iteration: iterations })
 
         const response = await withTimeout(

@@ -1,5 +1,5 @@
 import { defaultLoopConfig } from '../loop/types.js'
-import { defaultMemoryConfig, type MemoryAdapter } from '../memory/types.js'
+import { defaultMemoryConfig, type MemoryAdapter, type MemoryManagerConfig } from '../memory/types.js'
 import { InMemoryAdapter } from '../memory/InMemoryAdapter.js'
 import { ToolRegistry } from '../tools/ToolRegistry.js'
 import type { ToolDefinition } from '../tools/types.js'
@@ -39,6 +39,14 @@ export class HarnessBuilder {
 
   memory(adapter: MemoryAdapter): this {
     this.memoryAdapter = adapter
+    return this
+  }
+
+  memoryConfig(config: Partial<MemoryManagerConfig>): this {
+    this.config.memory = {
+      ...this.config.memory,
+      ...config,
+    }
     return this
   }
 

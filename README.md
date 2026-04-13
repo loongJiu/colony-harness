@@ -19,10 +19,11 @@
 
 - `colony-harness`（core runtime）
 - `@colony-harness/memory-sqlite`
+- `@colony-harness/memory-redis`
 - `@colony-harness/trace-console`
 - `@colony-harness/llm-openai`
-- `examples/basic-agent`
-- 单元测试（loop + tools）
+- `examples/basic-agent` / `examples/memory-agent`
+- 单元与集成测试（loop + tools + memory）
 
 ## 项目结构
 
@@ -31,10 +32,12 @@ colony-harness/
 ├── packages/
 │   ├── core/                 # 核心运行时 (npm: colony-harness)
 │   ├── memory-sqlite/        # SQLite 记忆适配器
+│   ├── memory-redis/         # Redis 记忆适配器
 │   ├── trace-console/        # 终端 trace 导出器
 │   └── llm-openai/           # OpenAI 兼容模型调用器
 ├── examples/
-│   └── basic-agent/          # 最小可运行示例
+│   ├── basic-agent/          # 最小可运行示例
+│   └── memory-agent/         # 记忆与语义检索示例
 ├── docs/
 └── .github/
 ```
@@ -64,6 +67,9 @@ pnpm test
 
 ```bash
 pnpm --filter @colony-harness/example-basic-agent dev
+pnpm --filter @colony-harness/example-memory-agent dev
+# 使用 SQLite 作为 memory backend（可选）
+MEMORY_BACKEND=sqlite pnpm --filter @colony-harness/example-memory-agent dev
 ```
 
 ## 使用示例

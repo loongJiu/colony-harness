@@ -23,6 +23,8 @@ export interface AgenticLoopConfig {
 
 export interface AgenticLoopHooks {
   onIteration?: (iteration: number, messages: LoopMessage[]) => void
+  beforeModelCall?: (messages: LoopMessage[]) => Promise<LoopMessage[]>
+  onMessagesCompressed?: (beforeTokens: number, afterTokens: number) => void
   onToolStart?: (toolName: string, input: unknown) => void
   onToolResult?: (toolName: string, output: unknown) => void
   onToolError?: (toolName: string, error: unknown) => void

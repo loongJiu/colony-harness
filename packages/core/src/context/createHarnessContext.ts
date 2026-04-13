@@ -6,6 +6,7 @@ import type { LLMProvider } from '../types/model.js'
 import type { ToolRegistry } from '../tools/ToolRegistry.js'
 import type { MemoryManager } from '../memory/MemoryManager.js'
 import type { TraceSession } from '../trace/TraceHub.js'
+import { estimateTokens } from '../utils/tokens.js'
 
 interface CreateContextOptions {
   capability: string
@@ -29,6 +30,11 @@ interface CreateContextOptions {
       agentId: string
       signal?: AbortSignal
       hooks?: {
+        beforeModelCall?: (
+          messages: { role: 'system' | 'user' | 'assistant' | 'tool'; content: string; toolCallId?: string; toolName?: string }[],
+        ) => Promise<
+          { role: 'system' | 'user' | 'assistant' | 'tool'; content: string; toolCallId?: string; toolName?: string }[]
+        >
         onToolStart?: (toolName: string, input: unknown) => void
         onToolResult?: (toolName: string, output: unknown) => void
         onToolError?: (toolName: string, error: unknown) => void
@@ -113,6 +119,22 @@ export const createHarnessContext = (options: CreateContextOptions): HarnessCont
         agentId,
         signal,
         hooks: {
+          beforeModelCall: async (messages) => {
+            const beforeTokens = estimateTokens(messages.map((message) => message.content).join('\n'))
+            const compressed = await memoryManager.maybeCompressMessages(
+              messages,
+              llmProvider.call.bind(llmProvider),
+            )
+            const afterTokens = estimateTokens(compressed.map((message) => message.content).join('\n'))
+            if (afterTokens < beforeTokens) {
+              emitEvent('memory:compressed', {
+                taskId,
+                beforeTokens,
+                afterTokens,
+              })
+            }
+            return compressed
+          },
           onToolStart: (name, toolInput) => emitEvent('tool:invoked', name, toolInput),
           onToolResult: (name, output) => emitEvent('tool:result', name, output),
           onToolError: (name, error) => emitEvent('tool:error', name, error),
@@ -123,6 +145,17 @@ export const createHarnessContext = (options: CreateContextOptions): HarnessCont
       await memoryManager.save({
         key: `task:${taskId}:loop_result`,
         value: result,
+        agentId,
+        sessionId,
+        taskId,
+      })
+      await memoryManager.saveSemantic({
+        key: `task:${taskId}:semantic`,
+        value: {
+          prompt,
+          output: result.output,
+          toolsInvoked: result.toolsInvoked,
+        },
         agentId,
         sessionId,
         taskId,
@@ -157,6 +190,15 @@ export const createHarnessContext = (options: CreateContextOptions): HarnessCont
           taskId,
         })
       },
+      async saveSemantic(key, value) {
+        await memoryManager.saveSemantic({
+          key,
+          value,
+          agentId,
+          sessionId,
+          taskId,
+        })
+      },
       async load(key) {
         return memoryManager.load(key)
       },
@@ -165,6 +207,9 @@ export const createHarnessContext = (options: CreateContextOptions): HarnessCont
       },
       async recent(limit) {
         return memoryManager.recent(agentId, limit)
+      },
+      async clearSession() {
+        await memoryManager.clearSession(sessionId)
       },
       get workingMessages() {
         return memoryManager.getWorkingMessages(taskId)

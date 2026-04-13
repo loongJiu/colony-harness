@@ -36,7 +36,7 @@
 
 - `runLoop()`
 - `invokeTool()`
-- `memory.save/load/search/recent`
+- `memory.save/saveSemantic/load/search/recent/clearSession`
 - `trace.startSpan()`
 
 ### 4. AgenticLoop
@@ -59,6 +59,7 @@
 - working memory（当前任务消息）
 - episodic memory（任务级记录）
 - semantic memory（可选 embedder 驱动）
+- ContextCompressor（超 token 自动摘要压缩）
 
 ### 7. TraceHub
 
@@ -75,6 +76,7 @@
 
 - `colony-harness`: 核心运行时
 - `@colony-harness/memory-sqlite`: SQLite 记忆持久化
+- `@colony-harness/memory-redis`: Redis 记忆持久化
 - `@colony-harness/trace-console`: console trace 导出
 - `@colony-harness/llm-openai`: OpenAI 兼容 provider
 
