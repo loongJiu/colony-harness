@@ -13,7 +13,7 @@
 
 ## MVP 状态
 
-当前版本为 `v0.1.0`（MVP），已实现开发计划中 Phase 1-5 的核心链路，并补充了必要的工程化与开源维护文件。
+当前版本为 `v0.1.0`（MVP），已实现开发计划中 Phase 1-6 的核心链路，并补充了必要的工程化与开源维护文件。
 
 已包含：
 
@@ -29,6 +29,7 @@
 - `@colony-harness/llm-anthropic`
 - `@colony-harness/llm-gemini`
 - `@colony-harness/tools-builtin`
+- `@colony-harness/evals`
 - `examples/basic-agent` / `examples/memory-agent`
 - 单元与集成测试（loop + tools + memory）
 
@@ -48,7 +49,8 @@ colony-harness/
 │   ├── llm-openai/           # OpenAI 模型调用器
 │   ├── llm-openai-compatible/# OpenAI 协议兼容模型调用器
 │   ├── llm-anthropic/        # Anthropic Claude 调用器
-│   └── llm-gemini/           # Google Gemini 调用器
+│   ├── llm-gemini/           # Google Gemini 调用器
+│   └── evals/                # 评测执行器与 scorer
 ├── examples/
 │   ├── basic-agent/          # 最小可运行示例
 │   └── memory-agent/         # 记忆与语义检索示例
@@ -143,6 +145,16 @@ console.log(output)
 - `calculator`
 - `json_query`
 - `template_render`
+
+## 评测工具
+
+`@colony-harness/evals` 提供：
+
+- 评测执行器 `runEvalSuite()`
+- 内置 scorer：`exactMatchScorer`、`containsScorer`、`regexScorer`、`numericRangeScorer`
+- 标准化结果报告：`results + summary(passRate/averageScore/weightedAverageScore)`
+
+详细说明见 [docs/evals.md](./docs/evals.md)。
 
 ## 发布脚本
 

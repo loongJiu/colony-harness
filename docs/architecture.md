@@ -86,10 +86,11 @@
 - `@colony-harness/llm-anthropic`: Anthropic provider
 - `@colony-harness/llm-gemini`: Gemini provider
 - `@colony-harness/tools-builtin`: 内置工具集（HTTP/File/Command/Search/JSON/Template）
+- `@colony-harness/evals`: 评测执行器与 scorer（回归/对比）
 
 ## 后续演进方向
 
 - 与 `colony-bee-sdk` 深度运行时集成
 - 工作记忆自动压缩器（context compressor）
 - 多 trace exporter（OTEL、Langfuse）
-- 评测体系（datasets + scorers + regression workflow）
+- 回归工作流与评测报告可视化（datasets + scorers + regression workflow）

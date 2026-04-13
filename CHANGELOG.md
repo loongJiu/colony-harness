@@ -35,6 +35,10 @@ and this project follows Semantic Versioning.
 - 新增 `@colony-harness/tools-builtin` 内置工具集：
   - `http_request` / `read_file` / `write_file` / `run_command`
   - `search_web` / `calculator` / `json_query` / `template_render`
+- 新增 `@colony-harness/evals` 评测工具包：
+  - 数据集执行器 `runEvalSuite()`
+  - 内置 scorer：`exactMatchScorer`、`containsScorer`、`regexScorer`、`numericRangeScorer`
+  - 评测测试覆盖（scorer 行为 + 失败容错 + 汇总统计）
 
 ## [0.1.0] - 2026-04-13
 
