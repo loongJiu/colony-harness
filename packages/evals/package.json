@@ -1,6 +1,6 @@
 {
   "name": "@colony-harness/evals",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Evaluation toolkit and scorers for colony-harness",
   "type": "module",
   "main": "dist/index.js",
