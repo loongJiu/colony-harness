@@ -39,6 +39,10 @@ and this project follows Semantic Versioning.
   - 数据集执行器 `runEvalSuite()`
   - 内置 scorer：`exactMatchScorer`、`containsScorer`、`regexScorer`、`numericRangeScorer`
   - 评测测试覆盖（scorer 行为 + 失败容错 + 汇总统计）
+- 文档与发布流程完善：
+  - 新增 `quickstart`、`advanced-guide`、`api-reference`、`release-workflow`、`changelog-guidelines`
+  - README 增加文档导航与发布流程索引
+  - CONTRIBUTING 补充 changelog 规范与发布流程引用
 
 ## [0.1.0] - 2026-04-13
 

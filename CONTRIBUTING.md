@@ -31,12 +31,14 @@
 - README 中的核心用法
 - CHANGELOG 变更记录
 - 必要时补充 docs 下设计文档
+- 遵循 [docs/changelog-guidelines.md](./docs/changelog-guidelines.md)
 
 ## 发布说明
 
-当前采用手动版本管理，发布前请确认：
+当前采用脚本化发布流程，发布前请确认：
 
 1. `CHANGELOG.md` 已更新
 2. 所有 CI 通过
 3. 示例可运行
 4. 版本号符合 semver 语义
+5. 按 [docs/release-workflow.md](./docs/release-workflow.md) 执行 dry-run 与正式发布

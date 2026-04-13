@@ -13,7 +13,7 @@
 
 ## MVP 状态
 
-当前版本为 `v0.1.0`（MVP），已实现开发计划中 Phase 1-6 的核心链路，并补充了必要的工程化与开源维护文件。
+当前版本为 `v0.1.0`（MVP），已实现开发计划中 Phase 1-7 的核心链路，并补充了必要的工程化与开源维护文件。
 
 已包含：
 
@@ -87,6 +87,16 @@ pnpm --filter @colony-harness/example-memory-agent dev
 # 使用 SQLite 作为 memory backend（可选）
 MEMORY_BACKEND=sqlite pnpm --filter @colony-harness/example-memory-agent dev
 ```
+
+## 文档导航
+
+- 架构设计: [docs/architecture.md](./docs/architecture.md)
+- Quickstart: [docs/quickstart.md](./docs/quickstart.md)
+- Advanced Guide: [docs/advanced-guide.md](./docs/advanced-guide.md)
+- API Reference: [docs/api-reference.md](./docs/api-reference.md)
+- Evals 使用说明: [docs/evals.md](./docs/evals.md)
+- Changelog 规范: [docs/changelog-guidelines.md](./docs/changelog-guidelines.md)
+- Release Workflow: [docs/release-workflow.md](./docs/release-workflow.md)
 
 ## 使用示例
 
@@ -174,11 +184,13 @@ console.log(output)
 - `--git-tag`：自动创建 `v<version>` tag
 - `--allow-dirty`：允许在 dirty 工作区执行（默认禁止）
 
+完整发布流程见 [docs/release-workflow.md](./docs/release-workflow.md)。
+
 ## 开发计划与路线图
 
 - MVP（v0.1.0）: core loop + tool registry + context + builder + in-memory + trace-console + memory-sqlite + llm-openai
 - v0.2.0: 完整记忆压缩、更多 trace exporter、增强 guardrails
-- v0.3.0: 内置工具集、多模型适配、评测系统
+- v0.3.0: 评测报告体系、自动回归工作流、与 BeeAgent 更深度集成
 
 详细说明见 [docs/architecture.md](./docs/architecture.md)。
 
@@ -193,6 +205,8 @@ console.log(output)
 - 变更日志: [CHANGELOG.md](./CHANGELOG.md)
 - 安全策略: [SECURITY.md](./SECURITY.md)
 - 行为准则: [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+- Changelog 书写规范: [docs/changelog-guidelines.md](./docs/changelog-guidelines.md)
+- 发布流程: [docs/release-workflow.md](./docs/release-workflow.md)
 
 ## License
 
