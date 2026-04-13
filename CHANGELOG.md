@@ -17,6 +17,12 @@ and this project follows Semantic Versioning.
 - 新增 `@colony-harness/memory-redis` 适配器（Redis 持久化后端）
 - 新增 `examples/memory-agent` 示例（语义记忆写入/检索）
 - 新增记忆模块测试（semantic 检索 + working memory 压缩 + 跨任务集成）
+- Phase 3（可观测性）首批增强：
+  - `TraceSession` metrics 聚合增强（loop/tools/errors/tokens）
+  - 新增 `@colony-harness/trace-file`（JSONL 导出）
+  - 新增 `@colony-harness/trace-otel`（OpenTelemetry 桥接）
+  - 新增 `@colony-harness/trace-langfuse`（Langfuse 导出）
+  - 新增 trace 集成测试（metrics 汇总校验）
 
 ## [0.1.0] - 2026-04-13
 

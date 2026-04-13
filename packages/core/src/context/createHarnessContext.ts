@@ -30,6 +30,10 @@ interface CreateContextOptions {
       agentId: string
       signal?: AbortSignal
       hooks?: {
+        onIteration?: (
+          iteration: number,
+          messages: { role: 'system' | 'user' | 'assistant' | 'tool'; content: string; toolCallId?: string; toolName?: string }[],
+        ) => void
         beforeModelCall?: (
           messages: { role: 'system' | 'user' | 'assistant' | 'tool'; content: string; toolCallId?: string; toolName?: string }[],
         ) => Promise<
@@ -119,6 +123,9 @@ export const createHarnessContext = (options: CreateContextOptions): HarnessCont
         agentId,
         signal,
         hooks: {
+          onIteration: (iteration) => {
+            traceSession.setMetric('loopIterations', iteration)
+          },
           beforeModelCall: async (messages) => {
             const beforeTokens = estimateTokens(messages.map((message) => message.content).join('\n'))
             const compressed = await memoryManager.maybeCompressMessages(
@@ -135,9 +142,15 @@ export const createHarnessContext = (options: CreateContextOptions): HarnessCont
             }
             return compressed
           },
-          onToolStart: (name, toolInput) => emitEvent('tool:invoked', name, toolInput),
+          onToolStart: (name, toolInput) => {
+            traceSession.incrementMetric('toolCallCount')
+            emitEvent('tool:invoked', name, toolInput)
+          },
           onToolResult: (name, output) => emitEvent('tool:result', name, output),
-          onToolError: (name, error) => emitEvent('tool:error', name, error),
+          onToolError: (name, error) => {
+            traceSession.incrementMetric('toolErrors')
+            emitEvent('tool:error', name, error)
+          },
         },
       })
 
@@ -161,10 +174,10 @@ export const createHarnessContext = (options: CreateContextOptions): HarnessCont
         taskId,
       })
       emitEvent('loop:end', result)
-      traceSession.addTraceAttribute('inputTokens', result.tokenUsage.input)
-      traceSession.addTraceAttribute('outputTokens', result.tokenUsage.output)
-      traceSession.addTraceAttribute('loopIterations', result.iterations)
-      traceSession.addTraceAttribute('toolCallCount', result.toolsInvoked.length)
+      traceSession.setMetric('inputTokens', result.tokenUsage.input)
+      traceSession.setMetric('outputTokens', result.tokenUsage.output)
+      traceSession.setMetric('loopIterations', result.iterations)
+      traceSession.setMetric('toolCallCount', result.toolsInvoked.length)
 
       return result
     },

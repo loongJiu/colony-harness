@@ -21,6 +21,9 @@
 - `@colony-harness/memory-sqlite`
 - `@colony-harness/memory-redis`
 - `@colony-harness/trace-console`
+- `@colony-harness/trace-file`
+- `@colony-harness/trace-otel`
+- `@colony-harness/trace-langfuse`
 - `@colony-harness/llm-openai`
 - `examples/basic-agent` / `examples/memory-agent`
 - 单元与集成测试（loop + tools + memory）
@@ -34,6 +37,9 @@ colony-harness/
 │   ├── memory-sqlite/        # SQLite 记忆适配器
 │   ├── memory-redis/         # Redis 记忆适配器
 │   ├── trace-console/        # 终端 trace 导出器
+│   ├── trace-file/           # JSONL 文件导出器
+│   ├── trace-otel/           # OpenTelemetry 导出桥接
+│   ├── trace-langfuse/       # Langfuse 导出器
 │   └── llm-openai/           # OpenAI 兼容模型调用器
 ├── examples/
 │   ├── basic-agent/          # 最小可运行示例

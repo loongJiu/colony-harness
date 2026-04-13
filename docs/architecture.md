@@ -78,6 +78,9 @@
 - `@colony-harness/memory-sqlite`: SQLite 记忆持久化
 - `@colony-harness/memory-redis`: Redis 记忆持久化
 - `@colony-harness/trace-console`: console trace 导出
+- `@colony-harness/trace-file`: JSONL 文件 trace 导出
+- `@colony-harness/trace-otel`: OpenTelemetry 导出桥接
+- `@colony-harness/trace-langfuse`: Langfuse 导出器
 - `@colony-harness/llm-openai`: OpenAI 兼容 provider
 
 ## 后续演进方向

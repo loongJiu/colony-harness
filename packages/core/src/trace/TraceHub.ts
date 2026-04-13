@@ -43,6 +43,14 @@ export class TraceSession {
   private readonly startTime = Date.now()
   private readonly spans: MutableTraceSpan[] = []
   private readonly traceAttributes: Record<string, unknown> = {}
+  private readonly metrics: CompletedTrace['metrics'] = {
+    totalTokens: 0,
+    inputTokens: 0,
+    outputTokens: 0,
+    toolCallCount: 0,
+    loopIterations: 0,
+    toolErrors: 0,
+  }
 
   constructor(
     private readonly exporters: TraceExporter[],
@@ -63,6 +71,14 @@ export class TraceSession {
     this.traceAttributes[key] = value
   }
 
+  setMetric(name: keyof CompletedTrace['metrics'], value: number): void {
+    this.metrics[name] = value
+  }
+
+  incrementMetric(name: keyof CompletedTrace['metrics'], by = 1): void {
+    this.metrics[name] += by
+  }
+
   async complete(params: {
     messages: LoopMessage[]
     output: unknown
@@ -71,19 +87,11 @@ export class TraceSession {
   }): Promise<CompletedTrace> {
     const endTime = Date.now()
 
-    const attrInputTokens =
-      typeof this.traceAttributes.inputTokens === 'number' ? this.traceAttributes.inputTokens : 0
-    const attrOutputTokens =
-      typeof this.traceAttributes.outputTokens === 'number' ? this.traceAttributes.outputTokens : 0
-    const attrLoopIterations =
-      typeof this.traceAttributes.loopIterations === 'number' ? this.traceAttributes.loopIterations : 0
-    const attrToolCallCount =
-      typeof this.traceAttributes.toolCallCount === 'number' ? this.traceAttributes.toolCallCount : 0
-    const attrToolErrors =
-      typeof this.traceAttributes.toolErrors === 'number' ? this.traceAttributes.toolErrors : 0
-
-    const inputTokens = params.metrics?.inputTokens ?? attrInputTokens
-    const outputTokens = params.metrics?.outputTokens ?? attrOutputTokens
+    const inputTokens = params.metrics?.inputTokens ?? this.metrics.inputTokens
+    const outputTokens = params.metrics?.outputTokens ?? this.metrics.outputTokens
+    const loopIterations = params.metrics?.loopIterations ?? this.metrics.loopIterations
+    const toolCallCount = params.metrics?.toolCallCount ?? this.metrics.toolCallCount
+    const toolErrors = params.metrics?.toolErrors ?? this.metrics.toolErrors
 
     const trace: CompletedTrace = {
       traceId: this.traceId,
@@ -111,9 +119,9 @@ export class TraceSession {
         totalTokens: inputTokens + outputTokens,
         inputTokens,
         outputTokens,
-        toolCallCount: params.metrics?.toolCallCount ?? attrToolCallCount,
-        loopIterations: params.metrics?.loopIterations ?? attrLoopIterations,
-        toolErrors: params.metrics?.toolErrors ?? attrToolErrors,
+        toolCallCount,
+        loopIterations,
+        toolErrors,
       },
       messages: params.messages,
       output: params.output,
