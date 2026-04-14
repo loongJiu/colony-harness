@@ -44,6 +44,15 @@ export class LoopMaxTokensError extends HarnessError {
   }
 }
 
+export class ModelCircuitOpenError extends HarnessError {
+  constructor(routeKey: string, nextAttemptAt: Date) {
+    super(
+      `Model circuit is open for route "${routeKey}" until ${nextAttemptAt.toISOString()}`,
+      'MODEL_CIRCUIT_OPEN',
+    )
+  }
+}
+
 export class GuardBlockedError extends HarnessError {
   constructor(stage: 'input' | 'output', reason: string) {
     super(`Guard blocked ${stage}: ${reason}`, 'GUARD_BLOCKED')

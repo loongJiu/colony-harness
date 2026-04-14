@@ -15,6 +15,14 @@ export class OpenAICompatibleProvider extends OpenAIProvider {
       baseUrl: options.baseUrl,
     })
   }
+
+  override getInfo() {
+    const info = super.getInfo()
+    return {
+      ...info,
+      provider: 'openai-compatible',
+    }
+  }
 }
 
 export const createOpenAICompatibleProviderFromEnv = (

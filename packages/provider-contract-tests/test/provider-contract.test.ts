@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import type { ModelRequest } from 'colony-harness'
+import { ModelProviderError, type ModelRequest } from 'colony-harness'
 import { OpenAIProvider } from '@colony-harness/llm-openai'
 import { AnthropicProvider } from '@colony-harness/llm-anthropic'
 import { GeminiProvider } from '@colony-harness/llm-gemini'
@@ -453,5 +453,109 @@ describe('provider contract matrix — multiple tool calls', () => {
     expect(response.toolCalls?.[1]?.name).toBe('search_weather')
     expect(response.toolCalls?.[1]?.input).toEqual({ city: 'Paris' })
     expect(response.toolCalls?.[1]?.id).toMatch(/^gemini_tool_\d+$/)
+  })
+})
+
+describe('provider contract matrix — structured error model', () => {
+  it('maps OpenAI 429 into retryable ModelProviderError with retry-after', async () => {
+    globalThis.fetch = async () =>
+      ({
+        ok: false,
+        status: 429,
+        headers: {
+          get(name: string) {
+            if (name.toLowerCase() === 'retry-after') return '2'
+            if (name.toLowerCase() === 'x-request-id') return 'req_openai_1'
+            return null
+          },
+        },
+        async text() {
+          return JSON.stringify({ error: { message: 'rate limited' } })
+        },
+      } as Response)
+
+    const provider = new OpenAIProvider({
+      apiKey: 'test',
+      model: 'gpt-test',
+      baseUrl: 'https://mock.openai.local',
+    })
+
+    await expect(provider.call(requestTextOnly)).rejects.toMatchObject({
+      name: 'ModelProviderError',
+      details: {
+        statusCode: 429,
+        kind: 'rate_limit',
+        retryable: true,
+        transient: true,
+        requestId: 'req_openai_1',
+        retryAfterMs: 2000,
+      },
+    } satisfies Partial<ModelProviderError>)
+  })
+
+  it('maps Anthropic 401 into non-retryable auth error', async () => {
+    globalThis.fetch = async () =>
+      ({
+        ok: false,
+        status: 401,
+        headers: {
+          get(name: string) {
+            if (name.toLowerCase() === 'request-id') return 'req_anthropic_1'
+            return null
+          },
+        },
+        async text() {
+          return JSON.stringify({ error: { message: 'unauthorized' } })
+        },
+      } as Response)
+
+    const provider = new AnthropicProvider({
+      apiKey: 'test',
+      model: 'claude-test',
+      baseUrl: 'https://mock.anthropic.local',
+    })
+
+    await expect(provider.call(requestTextOnly)).rejects.toMatchObject({
+      name: 'ModelProviderError',
+      details: {
+        statusCode: 401,
+        kind: 'auth_error',
+        retryable: false,
+        transient: false,
+        requestId: 'req_anthropic_1',
+      },
+    } satisfies Partial<ModelProviderError>)
+  })
+
+  it('maps Gemini 503 into retryable server error', async () => {
+    globalThis.fetch = async () =>
+      ({
+        ok: false,
+        status: 503,
+        headers: {
+          get() {
+            return null
+          },
+        },
+        async text() {
+          return JSON.stringify({ error: { message: 'service unavailable' } })
+        },
+      } as Response)
+
+    const provider = new GeminiProvider({
+      apiKey: 'test',
+      model: 'gemini-test',
+      baseUrl: 'https://mock.gemini.local',
+    })
+
+    await expect(provider.call(requestTextOnly)).rejects.toMatchObject({
+      name: 'ModelProviderError',
+      details: {
+        statusCode: 503,
+        kind: 'server_error',
+        retryable: true,
+        transient: true,
+      },
+    } satisfies Partial<ModelProviderError>)
   })
 })

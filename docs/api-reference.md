@@ -57,6 +57,15 @@ const harness = new HarnessBuilder()
 |------|--------|------|
 | `maxIterations` | `20` | 最大迭代轮次 |
 | `callTimeout` | `30000` | 单次模型调用超时 (ms) |
+| `modelFailStrategy` | `abort` | 模型失败策略：`abort` / `retry` |
+| `modelRetryMax` | `2` | 模型重试最大次数（策略为 `retry` 时） |
+| `modelRetryBaseDelayMs` | `300` | 模型重试基础退避时间 (ms) |
+| `modelRetryMaxDelayMs` | `5000` | 模型重试退避时间上限 (ms) |
+| `modelRetryJitterRatio` | `0.2` | 模型重试抖动比例（0~1） |
+| `modelRetryMaxTotalDelayMs` | `15000` | 模型重试总等待预算上限 (ms) |
+| `modelCircuitBreakerEnabled` | `true` | 是否启用模型熔断器 |
+| `modelCircuitBreakerFailureThreshold` | `5` | 熔断触发阈值（连续瞬态失败次数） |
+| `modelCircuitBreakerCooldownMs` | `30000` | 熔断冷却时间 (ms) |
 | `maxTokens` | 无 | 总 Token 上限 |
 | `toolConcurrency` | `1` | 工具并发度 |
 | `toolFailStrategy` | `abort` | 失败策略：`abort` / `continue` / `retry` |

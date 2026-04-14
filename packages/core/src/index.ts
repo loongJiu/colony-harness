@@ -7,6 +7,7 @@ export { InMemoryAdapter } from './memory/InMemoryAdapter.js'
 export { ContextCompressor } from './memory/ContextCompressor.js'
 export { TraceHub } from './trace/TraceHub.js'
 export { Guardrails } from './guard/Guardrails.js'
+export { ResilientModelCaller } from './resilience/index.js'
 export {
   PromptInjectionGuard,
   PIIGuard,
@@ -15,6 +16,12 @@ export {
   RateLimitGuard,
 } from './guard/builtin.js'
 export { createId } from './utils/ids.js'
+export {
+  isAbortError,
+  parseRetryAfterMs,
+  mapStatusToErrorShape,
+  sanitizeEndpoint,
+} from './utils/provider-errors.js'
 
 export * from './types/common.js'
 export * from './types/model.js'

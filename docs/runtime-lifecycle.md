@@ -75,4 +75,6 @@ flowchart TD
 
 - loop 太长：降低 `maxIterations`，或增加 stop condition
 - token 过大：调小 `workingMemoryTokenLimit`
+- 模型网络抖动：`modelFailStrategy` 设为 `retry`，并调整 `modelRetryMax` / `modelRetryBaseDelayMs`
+- 外部服务持续异常：开启 `modelCircuitBreakerEnabled`，并设置 `modelCircuitBreakerFailureThreshold` / `modelCircuitBreakerCooldownMs`
 - 工具易失败：`toolFailStrategy` 设为 `retry` 并调 `toolRetryMax`

@@ -7,6 +7,8 @@ import type { ToolRegistry } from '../tools/ToolRegistry.js'
 import type { MemoryManager } from '../memory/MemoryManager.js'
 import type { TraceSession } from '../trace/TraceHub.js'
 import { estimateTokens } from '../utils/tokens.js'
+import { sanitizeEndpoint } from '../utils/provider-errors.js'
+import { ResilientModelCaller } from '../resilience/ResilientModelCaller.js'
 
 interface CreateContextOptions {
   capability: string
@@ -29,6 +31,7 @@ interface CreateContextOptions {
       taskId: string
       agentId: string
       signal?: AbortSignal
+      modelRouteKey?: string
       hooks?: {
         onIteration?: (
           iteration: number,
@@ -59,6 +62,13 @@ interface CreateContextOptions {
 const toMemoryMessage = (entry: { createdAt: Date; content: string }) =>
   `[${entry.createdAt.toISOString()}] ${entry.content}`
 
+const buildModelRouteKey = (provider: LLMProvider): string => {
+  const info = provider.getInfo?.()
+  if (!info) return 'unknown-provider:unknown-model'
+  const safeEndpoint = info.endpoint ? sanitizeEndpoint(info.endpoint) : 'unknown-endpoint'
+  return `${info.provider}:${info.model ?? 'unknown-model'}:${safeEndpoint}`
+}
+
 export const createHarnessContext = (options: CreateContextOptions): HarnessContext => {
   const {
     capability,
@@ -78,6 +88,11 @@ export const createHarnessContext = (options: CreateContextOptions): HarnessCont
     emitEvent,
   } = options
 
+  const modelRouteKey = buildModelRouteKey(llmProvider)
+  const resilientModelCaller = new ResilientModelCaller(defaultLoopConfig, modelRouteKey)
+  const invokeModel = (request: Parameters<LLMProvider['call']>[0]) =>
+    resilientModelCaller.call(llmProvider.call.bind(llmProvider), request)
+
   const context: HarnessContext = {
     taskId,
     capability,
@@ -85,10 +100,10 @@ export const createHarnessContext = (options: CreateContextOptions): HarnessCont
     signal,
     logger,
     async callModel(request) {
-      return llmProvider.call({ ...request, signal })
+      return invokeModel({ ...request, signal })
     },
     async callModelWithTools(request) {
-      return llmProvider.call({ ...request, signal })
+      return invokeModel({ ...request, signal })
     },
     async runLoop(prompt: string) {
       const loaded = await memoryManager.loadContext({
@@ -118,6 +133,7 @@ export const createHarnessContext = (options: CreateContextOptions): HarnessCont
       emitEvent('loop:start', { taskId, capability })
       const result = await loop.run({
         modelCaller: llmProvider.call.bind(llmProvider),
+        modelRouteKey,
         initialMessages,
         taskId,
         agentId,
@@ -130,7 +146,7 @@ export const createHarnessContext = (options: CreateContextOptions): HarnessCont
             const beforeTokens = estimateTokens(messages.map((message) => message.content).join('\n'))
             const compressed = await memoryManager.maybeCompressMessages(
               messages,
-              llmProvider.call.bind(llmProvider),
+              invokeModel,
             )
             const afterTokens = estimateTokens(compressed.map((message) => message.content).join('\n'))
             if (afterTokens < beforeTokens) {

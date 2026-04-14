@@ -30,10 +30,53 @@ export interface ModelResponse {
   }
 }
 
+export type ProviderErrorKind =
+  | 'network'
+  | 'timeout'
+  | 'rate_limit'
+  | 'server_error'
+  | 'client_error'
+  | 'auth_error'
+  | 'invalid_request'
+  | 'aborted'
+  | 'unknown'
+
+export interface ProviderErrorDetails {
+  provider?: string
+  model?: string
+  endpoint?: string
+  requestId?: string
+  statusCode?: number
+  retryable: boolean
+  transient: boolean
+  retryAfterMs?: number
+  kind: ProviderErrorKind
+}
+
+export class ModelProviderError extends Error {
+  readonly details: ProviderErrorDetails
+
+  constructor(message: string, details: ProviderErrorDetails, options?: { cause?: unknown }) {
+    super(message, options)
+    this.name = 'ModelProviderError'
+    this.details = details
+  }
+}
+
+export const isModelProviderError = (error: unknown): error is ModelProviderError =>
+  error instanceof ModelProviderError
+
+export interface LLMProviderInfo {
+  provider: string
+  model?: string
+  endpoint?: string
+}
+
 export type ModelCaller = (request: ModelRequest) => Promise<ModelResponse>
 
 export interface LLMProvider {
   call(request: ModelRequest): Promise<ModelResponse>
+  getInfo?(): LLMProviderInfo
 }
 
 export const normalizeUsage = (usage?: ModelResponse['usage']): TokenUsage => ({
