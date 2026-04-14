@@ -1,6 +1,6 @@
 {
   "name": "@colony-harness/trace-file",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "JSONL file trace exporter for colony-harness",
   "type": "module",
   "main": "dist/index.js",

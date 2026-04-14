@@ -1,6 +1,6 @@
 {
   "name": "@colony-harness/tools-builtin",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Built-in tools for colony-harness agents",
   "type": "module",
   "main": "dist/index.js",

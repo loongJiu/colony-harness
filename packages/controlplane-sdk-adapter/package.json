@@ -1,6 +1,6 @@
 {
   "name": "@colony-harness/controlplane-sdk-adapter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Control plane adapter that bridges colony-harness contract to colony-bee-sdk",
   "type": "module",
   "main": "dist/index.js",

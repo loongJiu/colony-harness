@@ -1,6 +1,6 @@
 {
   "name": "@colony-harness/trace-otel",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "OpenTelemetry trace exporter bridge for colony-harness",
   "type": "module",
   "main": "dist/index.js",
