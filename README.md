@@ -1,42 +1,21 @@
 # colony-harness
 
-> 基于 `colony-bee-sdk` 设计理念构建的生产级 AI Agent Harness（MVP）
+> 基于 `colony-bee-sdk` 设计理念构建的生产级 AI Agent 运行时
 
-`colony-harness` 用来解决“模型很强，但缺少生产运行时”的问题。它提供了可组合的 Agent 执行基础设施：
+[![CI](https://github.com/loongJiu/colony-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/loongJiu/colony-harness/actions/workflows/ci.yml)
+[![Docs](https://github.com/loongJiu/colony-harness/actions/workflows/docs.yml/badge.svg)](https://github.com/loongJiu/colony-harness/actions/workflows/docs.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-- ReAct Agentic Loop（推理 -> 行动 -> 观察）
-- Tool Registry（工具注册、Schema 校验、调用）
-- Memory Manager（working + episodic + semantic 抽象）
-- Trace Hub（全链路追踪 + 可插拔导出）
-- Guardrails（输入输出护栏）
-- 声明式 `HarnessBuilder` API
+`colony-harness` 用来解决”模型很强，但缺少生产运行时”的问题。它提供了可组合的 Agent 执行基础设施：
 
-## MVP 状态
-
-当前版本为 `v0.1.0`（MVP），已实现开发计划中 Phase 1-7 的核心链路，并补充了必要的工程化与开源维护文件。
-
-已包含：
-
-- `colony-harness`（core runtime）
-- `@colony-harness/memory-sqlite`
-- `@colony-harness/memory-redis`
-- `@colony-harness/trace-console`
-- `@colony-harness/trace-file`
-- `@colony-harness/trace-otel`
-- `@colony-harness/trace-langfuse`
-- `@colony-harness/llm-openai`
-- `@colony-harness/llm-openai-compatible`
-- `@colony-harness/llm-anthropic`
-- `@colony-harness/llm-gemini`
-- `@colony-harness/tools-builtin`
-- `@colony-harness/evals`
-- `@colony-harness/controlplane-contract`
-- `@colony-harness/controlplane-mock-adapter`
-- `@colony-harness/controlplane-runtime`
-- `@colony-harness/controlplane-sdk-adapter`
-- `@colony-harness/provider-contract-tests`
-- `examples/basic-agent` / `examples/memory-agent`
-- 单元与集成测试（loop + tools + memory）
+- **ReAct Agentic Loop**（推理 -> 行动 -> 观察）
+- **Tool Registry**（工具注册、Zod Schema 校验、调用）
+- **Memory Manager**（working + episodic + semantic 三层记忆，自动上下文压缩）
+- **Trace Hub**（全链路追踪 + 可插拔导出）
+- **Guardrails**（输入输出五重护栏）
+- **声明式 `HarnessBuilder` API**
+- **ResilientModelCaller**（重试 + 熔断 + 结构化错误处理）
+- **Eval Gate**（发布质量门禁）
 
 ## 项目结构
 
@@ -183,13 +162,39 @@ const output = await harness.runTask('research', 'TypeScript Agent Framework')
 console.log(output)
 ```
 
+> 更多示例见 [examples/](./examples/) 目录。
+
 ## 工程化能力
 
 - pnpm workspace + turborepo monorepo
 - TypeScript strict mode
-- Vitest 单元测试
-- GitHub Actions CI（build/typecheck/test）
+- Vitest 单元与集成测试
+- GitHub Actions CI（build / typecheck / test / eval:gate）
+- 双语文档站（VitePress + GitHub Pages）
 - ISSUE/PR 模板、贡献指南、安全策略、变更日志
+- 核心边界检查（`pnpm check:core-boundary`）
+
+## 模型调用弹性
+
+`colony-harness` 内置 `ResilientModelCaller`，为 LLM 调用提供生产级弹性保障：
+
+- **重试**：指数退避 + 抖动，可配置最大次数与累积延迟
+- **熔断器**：closed → open → half_open 状态机，自动隔离不稳定 provider
+- **结构化错误**：`ModelProviderError` 携带 `retryable` / `statusCode` / `retryAfterMs` 等信息
+- **超时控制**：单次调用超时 + 独立 AbortController 管理
+
+```ts
+const harness = await new HarnessBuilder()
+  .llm(new OpenAIProvider({ apiKey: process.env.OPENAI_API_KEY! }))
+  .loopConfig({
+    modelFailStrategy: 'retry',
+    modelRetryMax: 3,
+    modelRetryBaseDelayMs: 500,
+    modelCircuitBreakerEnabled: true,
+    callTimeout: 30_000,
+  })
+  .build()
+```
 
 ## 内置工具
 
@@ -249,13 +254,14 @@ pnpm eval:gate
 
 完整发布流程见 [docs/release-workflow.md](./docs/release-workflow.md)。
 
-## 开发计划与路线图
+## 开发路线图
 
-- MVP（v0.1.0）: core loop + tool registry + context + builder + in-memory + trace-console + memory-sqlite + llm-openai
-- v0.2.0: 完整记忆压缩、更多 trace exporter、增强 guardrails
-- v0.3.0: 评测报告体系、自动回归工作流、与 BeeAgent 更深度集成
+- **v1.0.0** — 核心运行时、记忆体系、可观测性、多模型 Provider、内置工具、评测框架
+- **v1.1.0** — ResilientModelCaller（重试 / 熔断 / 结构化错误）
+- **v1.2.0（计划）** — 控制面完善、流式输出、更多 Tool 集成
+- **v2.0.0（计划）** — 多 Agent 协作、分布式任务编排
 
-详细说明见 [docs/architecture.md](./docs/architecture.md)。
+详细架构设计见 [docs/architecture.md](./docs/architecture.md)。
 
 ## 与 colony-bee-sdk 的关系
 

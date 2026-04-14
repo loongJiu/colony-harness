@@ -57,6 +57,15 @@ const harness = new HarnessBuilder()
 |-------|---------|-------------|
 | `maxIterations` | `20` | Maximum loop iterations |
 | `callTimeout` | `30000` | Single model call timeout (ms) |
+| `modelFailStrategy` | `abort` | Model fail strategy: `abort` / `retry` |
+| `modelRetryMax` | `2` | Max model retries (when strategy is `retry`) |
+| `modelRetryBaseDelayMs` | `300` | Base backoff delay for model retries (ms) |
+| `modelRetryMaxDelayMs` | `5000` | Max backoff delay for model retries (ms) |
+| `modelRetryJitterRatio` | `0.2` | Retry jitter ratio for model calls (0~1) |
+| `modelRetryMaxTotalDelayMs` | `15000` | Max aggregate delay budget for model retries (ms) |
+| `modelCircuitBreakerEnabled` | `true` | Enable model circuit breaker |
+| `modelCircuitBreakerFailureThreshold` | `5` | Consecutive transient failures before opening circuit |
+| `modelCircuitBreakerCooldownMs` | `30000` | Circuit breaker cooldown duration (ms) |
 | `maxTokens` | none | Total token limit |
 | `toolConcurrency` | `1` | Tool concurrency level |
 | `toolFailStrategy` | `abort` | Fail strategy: `abort` / `continue` / `retry` |

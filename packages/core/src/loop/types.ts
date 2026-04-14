@@ -16,6 +16,15 @@ export interface AgenticLoopConfig {
   maxTokens?: number
   callTimeout: number
   stopConditions?: StopCondition[]
+  modelFailStrategy?: 'abort' | 'retry'
+  modelRetryMax?: number
+  modelRetryBaseDelayMs?: number
+  modelRetryMaxDelayMs?: number
+  modelRetryJitterRatio?: number
+  modelRetryMaxTotalDelayMs?: number
+  modelCircuitBreakerEnabled?: boolean
+  modelCircuitBreakerFailureThreshold?: number
+  modelCircuitBreakerCooldownMs?: number
   toolConcurrency: number
   toolFailStrategy: 'abort' | 'continue' | 'retry'
   toolRetryMax: number
@@ -36,6 +45,7 @@ export interface AgenticLoopRunOptions {
   taskId: string
   agentId: string
   signal?: AbortSignal
+  modelRouteKey?: string
   hooks?: AgenticLoopHooks
 }
 
@@ -58,6 +68,15 @@ export interface LoopResult {
 export const defaultLoopConfig = (): AgenticLoopConfig => ({
   maxIterations: 20,
   callTimeout: 30_000,
+  modelFailStrategy: 'abort',
+  modelRetryMax: 2,
+  modelRetryBaseDelayMs: 300,
+  modelRetryMaxDelayMs: 5_000,
+  modelRetryJitterRatio: 0.2,
+  modelRetryMaxTotalDelayMs: 15_000,
+  modelCircuitBreakerEnabled: false,
+  modelCircuitBreakerFailureThreshold: 5,
+  modelCircuitBreakerCooldownMs: 30_000,
   toolConcurrency: 1,
   toolFailStrategy: 'abort',
   toolRetryMax: 2,

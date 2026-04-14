@@ -54,3 +54,11 @@ After task handler returns:
 - `toolErrors`
 - `inputTokens`
 - `outputTokens`
+
+## 4. Common tuning points
+
+- Loop runs too long: lower `maxIterations`, or add stop conditions.
+- Token usage is high: lower `workingMemoryTokenLimit`.
+- Model calls are flaky: set `modelFailStrategy` to `retry`, then tune `modelRetryMax` / `modelRetryBaseDelayMs`.
+- Upstream is consistently unhealthy: enable `modelCircuitBreakerEnabled` and tune `modelCircuitBreakerFailureThreshold` / `modelCircuitBreakerCooldownMs`.
+- Tools fail often: set `toolFailStrategy` to `retry`, then tune `toolRetryMax`.

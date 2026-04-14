@@ -3,12 +3,11 @@ import type { ToolExecutionContext } from '../tools/types.js'
 import { createConsoleLogger } from '../types/common.js'
 import { normalizeUsage } from '../types/model.js'
 import type { TraceSpan } from '../trace/types.js'
-import { withTimeout } from '../utils/timeout.js'
+import { ResilientModelCaller } from '../resilience/ResilientModelCaller.js'
 import {
   defaultLoopConfig,
   type AgenticLoopConfig,
   type AgenticLoopRunOptions,
-  type LoopMessage,
   type LoopResult,
   type ToolResult,
 } from './types.js'
@@ -25,12 +24,13 @@ export class AgenticLoop {
   }
 
   async run(options: AgenticLoopRunOptions): Promise<LoopResult> {
-    const { initialMessages, modelCaller, taskId, agentId, signal, hooks } = options
+    const { initialMessages, modelCaller, taskId, agentId, signal, hooks, modelRouteKey } = options
     let messages = [...initialMessages]
     const toolsInvoked: string[] = []
     let tokenUsage = { input: 0, output: 0 }
     let iterations = 0
     const startedAt = Date.now()
+    const resilientModelCaller = new ResilientModelCaller(this.config, modelRouteKey ?? 'default-model-route')
 
     const loopSpan = this.tracer.startSpan('agentic_loop', {
       taskId,
@@ -49,16 +49,11 @@ export class AgenticLoop {
 
         const iterationSpan = this.tracer.startSpan('loop_iteration', { iteration: iterations })
 
-        const response = await withTimeout(
-          () =>
-            modelCaller({
-              messages,
-              tools: this.toolRegistry.getSchemas(),
-              signal,
-            }),
-          this.config.callTimeout,
-          `Model call timed out after ${this.config.callTimeout}ms`,
-        )
+        const response = await resilientModelCaller.call(modelCaller, {
+          messages,
+          tools: this.toolRegistry.getSchemas(),
+          signal,
+        })
 
         const usage = normalizeUsage(response.usage)
         tokenUsage = {

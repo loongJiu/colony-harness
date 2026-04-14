@@ -7,9 +7,29 @@ and this project follows Semantic Versioning.
 
 ## [1.1.0] - 2026-04-14
 
+### Added
+
+- 新增 `ResilientModelCaller` — 模型调用弹性层：
+  - 可配置重试策略（指数退避 + 抖动，最大重试次数 / 最大累积延迟 / 单次调用超时）
+  - 熔断器（closed → open → half_open 状态机，可配阈值与冷却时间）
+  - 结构化错误分类：自动识别可重试错误（超时、网络故障、5xx/429/408）与非可重试错误
+- 新增 `ModelProviderError` 错误类型，携带 `kind` / `retryable` / `transient` / `statusCode` / `retryAfterMs` 结构化信息
+- 新增 `ModelCircuitOpenError` 错误类型，标识熔断器打开状态
+- 新增 `@colony-harness/llm-openai` 结构化错误映射（OpenAI API 错误 → ModelProviderError）
+- 新增 `@colony-harness/llm-anthropic` 结构化错误映射（Anthropic API 错误 → ModelProviderError）
+- 新增 `@colony-harness/llm-gemini` 结构化错误映射（Gemini API 错误 → ModelProviderError）
+- 新增 `AgenticLoopConfig` 弹性配置字段：
+  - `modelFailStrategy`：`'abort'`（默认）或 `'retry'`
+  - `modelRetryMax` / `modelRetryBaseDelayMs` / `modelRetryMaxDelayMs` / `modelRetryJitterRatio`
+  - `modelRetryMaxTotalDelayMs` / `callTimeout`
+  - `modelCircuitBreakerEnabled` / `modelCircuitBreakerFailureThreshold` / `modelCircuitBreakerCooldownMs`
+- 新增 `isAbortError` / `isModelProviderError` 工具函数
+- 新增 provider-contract 测试：覆盖重试、熔断、超时、结构化错误断言
+
 ### Changed
 
-- TBD
+- `AgenticLoop` 内部模型调用委托给 `ResilientModelCaller`，统一重试与熔断逻辑
+- `HarnessContext.runLoop()` 透传弹性配置（由 builder 层注入）
 
 ## [1.0.0] - 2026-04-13
 
