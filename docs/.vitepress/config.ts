@@ -63,7 +63,7 @@ const zhThemeConfig = {
   ],
   socialLinks,
   editLink: {
-    pattern: 'https://github.com/loongJiu/colony-harness/edit/release/mvp-v1.0.0/docs/:path',
+    pattern: 'https://github.com/loongJiu/colony-harness/edit/master/docs/:path',
     text: '在 GitHub 上编辑此页',
   },
   lastUpdatedText: '最后更新',
@@ -142,7 +142,7 @@ const enThemeConfig = {
   ],
   socialLinks,
   editLink: {
-    pattern: 'https://github.com/loongJiu/colony-harness/edit/release/mvp-v1.0.0/docs/:path',
+    pattern: 'https://github.com/loongJiu/colony-harness/edit/master/docs/:path',
     text: 'Edit this page on GitHub',
   },
   lastUpdatedText: 'Last updated',
