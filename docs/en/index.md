@@ -36,6 +36,7 @@ features:
     details: OpenAI / Anthropic / Gemini / OpenAI-Compatible — swap providers with a single line.
     link: /en/api-reference
 ---
+
 <div class="portal-section">
 <div class="install-bar">
   <span class="cmd">pnpm add colony-harness</span>
