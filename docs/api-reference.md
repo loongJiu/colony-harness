@@ -4,7 +4,7 @@
 
 ---
 
-## Core Runtime
+## 1. `HarnessBuilder`
 
 <div class="pkg-header">
 <span class="badge badge-core">Core</span>
@@ -314,7 +314,103 @@ const provider2 = createOpenAICompatibleProviderFromEnv()
 
 ---
 
-## Memory Adapters
+### 1.2 `loopConfig` 参数
+
+| 字段 | 默认值 | 说明 |
+| --- | --- | --- |
+| `maxIterations` | `20` | 最多迭代轮次 |
+| `callTimeout` | `30000` | 单次模型调用超时（ms） |
+| `maxTokens` | 无 | 总 token 上限 |
+| `toolConcurrency` | `1` | 工具并发度 |
+| `toolFailStrategy` | `abort` | `abort` / `continue` / `retry` |
+| `toolRetryMax` | `2` | 重试最大次数（策略为 `retry` 时） |
+
+### 1.3 `memoryConfig` 参数
+
+| 字段 | 默认值 | 说明 |
+| --- | --- | --- |
+| `workingMemoryTokenLimit` | `6000` | working memory 压缩阈值 |
+| `episodicRetentionDays` | `30` | episodic 记忆保留天数 |
+| `semanticTopK` | `5` | 语义检索默认返回条数 |
+| `autoCompress` | `true` | 是否自动压缩上下文 |
+| `embedder` | 无 | 语义向量函数 `(text)=>number[]` |
+
+## 2. Core Runtime
+
+### 2.1 `ColonyHarness`
+
+- `task(capability, handler)`：注册任务处理器
+- `runTask(capability, input, options?)`：执行任务
+
+`runTask` 的 `options`：
+
+| 字段 | 说明 |
+| --- | --- |
+| `agentId` | agent 标识 |
+| `sessionId` | 会话标识 |
+| `signal` | `AbortSignal`，可用于取消 |
+
+### 2.2 `HarnessContext`
+
+任务 handler 内可用能力：
+
+- `runLoop(prompt)`
+- `invokeTool(name, input)`
+- `memory.save/saveSemantic/load/search/recent/clearSession`
+- `trace.startSpan/addEvent/setAttribute`
+- `callModel/callModelWithTools`
+
+## 3. LLM Providers
+
+### 3.1 `@colony-harness/llm-openai`
+
+`new OpenAIProvider(options)`
+
+| 字段 | 必需 | 说明 |
+| --- | --- | --- |
+| `apiKey` | 是 | OpenAI key |
+| `model` | 是 | 模型名 |
+| `baseUrl` | 否 | 默认 `https://api.openai.com/v1` |
+| `temperature` | 否 | 采样温度 |
+| `timeoutMs` | 否 | 请求超时 |
+| `headers` | 否 | 额外请求头 |
+
+### 3.2 `@colony-harness/llm-openai-compatible`
+
+- `new OpenAICompatibleProvider(options)`
+- `createOpenAICompatibleProviderFromEnv(defaults?)`
+
+环境变量读取逻辑见 [environment-variables.md](./environment-variables.md)。
+
+### 3.3 `@colony-harness/llm-anthropic`
+
+`new AnthropicProvider(options)`
+
+| 字段 | 必需 | 说明 |
+| --- | --- | --- |
+| `apiKey` | 是 | Anthropic key |
+| `model` | 是 | Claude model |
+| `baseUrl` | 否 | 默认 `https://api.anthropic.com` |
+| `maxTokens` | 否 | 输出 token 上限 |
+| `temperature` | 否 | 温度 |
+| `timeoutMs` | 否 | 超时 |
+| `anthropicVersion` | 否 | 默认 `2023-06-01` |
+| `headers` | 否 | 扩展头 |
+
+### 3.4 `@colony-harness/llm-gemini`
+
+`new GeminiProvider(options)`
+
+| 字段 | 必需 | 说明 |
+| --- | --- | --- |
+| `apiKey` | 是 | Gemini key |
+| `model` | 是 | 模型名 |
+| `baseUrl` | 否 | 默认 `https://generativelanguage.googleapis.com/v1beta` |
+| `temperature` | 否 | 温度 |
+| `timeoutMs` | 否 | 超时 |
+| `headers` | 否 | 扩展头 |
+
+## 4. Memory Adapters
 
 <div class="pkg-header">
 <span class="badge badge-memory">Memory</span>
@@ -377,7 +473,17 @@ const memory = new RedisMemoryAdapter({
 
 ---
 
-## Trace Exporters
+### 4.1 Redis Adapter
+
+`new RedisMemoryAdapter(options?)`
+
+| 字段 | 说明 |
+| --- | --- |
+| `url` | Redis URL，默认取 `REDIS_URL` |
+| `namespace` | key 前缀，默认 `colony:memory` |
+| `redis` | 传入已有 `ioredis` 实例 |
+
+## 5. Trace Exporters
 
 <div class="pkg-header">
 <span class="badge badge-trace">Trace</span>
@@ -487,7 +593,15 @@ const exporter = new LangfuseTraceExporter({
 
 ---
 
-## Built-in Tools
+- 返回一组默认工具：
+  - `http_request`
+  - `read_file`
+  - `write_file`
+  - `run_command`
+  - `search_web`
+  - `calculator`
+  - `json_query`
+  - `template_render`
 
 <div class="pkg-header">
 <span class="badge badge-tools">Tools</span>
