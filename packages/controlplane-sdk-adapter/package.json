@@ -1,0 +1,28 @@
+{
+  "name": "@colony-harness/controlplane-sdk-adapter",
+  "version": "1.0.0",
+  "description": "Control plane adapter that bridges colony-harness contract to colony-bee-sdk",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@colony-harness/controlplane-contract": "workspace:*",
+    "colony-harness": "workspace:*"
+  }
+}

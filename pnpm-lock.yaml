@@ -48,6 +48,51 @@ importers:
         specifier: workspace:*
         version: link:../../packages/core
 
+  examples/queen-agent-via-sdk:
+    dependencies:
+      '@colony-harness/controlplane-runtime':
+        specifier: workspace:*
+        version: link:../../packages/controlplane-runtime
+      '@colony-harness/controlplane-sdk-adapter':
+        specifier: workspace:*
+        version: link:../../packages/controlplane-sdk-adapter
+      colony-harness:
+        specifier: workspace:*
+        version: link:../../packages/core
+
+  packages/controlplane-contract: {}
+
+  packages/controlplane-mock-adapter:
+    dependencies:
+      '@colony-harness/controlplane-contract':
+        specifier: workspace:*
+        version: link:../controlplane-contract
+
+  packages/controlplane-runtime:
+    dependencies:
+      '@colony-harness/controlplane-contract':
+        specifier: workspace:*
+        version: link:../controlplane-contract
+      colony-harness:
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@colony-harness/controlplane-mock-adapter':
+        specifier: workspace:*
+        version: link:../controlplane-mock-adapter
+      '@colony-harness/controlplane-sdk-adapter':
+        specifier: workspace:*
+        version: link:../controlplane-sdk-adapter
+
+  packages/controlplane-sdk-adapter:
+    dependencies:
+      '@colony-harness/controlplane-contract':
+        specifier: workspace:*
+        version: link:../controlplane-contract
+      colony-harness:
+        specifier: workspace:*
+        version: link:../core
+
   packages/core:
     dependencies:
       zod:
@@ -103,6 +148,21 @@ importers:
       sqlite3:
         specifier: ^5.1.7
         version: 5.1.7
+
+  packages/provider-contract-tests:
+    dependencies:
+      '@colony-harness/llm-anthropic':
+        specifier: workspace:*
+        version: link:../llm-anthropic
+      '@colony-harness/llm-gemini':
+        specifier: workspace:*
+        version: link:../llm-gemini
+      '@colony-harness/llm-openai':
+        specifier: workspace:*
+        version: link:../llm-openai
+      colony-harness:
+        specifier: workspace:*
+        version: link:../core
 
   packages/tools-builtin:
     dependencies:

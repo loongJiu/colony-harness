@@ -1,0 +1,32 @@
+{
+  "name": "@colony-harness/controlplane-runtime",
+  "version": "1.0.0",
+  "description": "Runtime bridge between colony-harness core and control plane adapters",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@colony-harness/controlplane-contract": "workspace:*",
+    "colony-harness": "workspace:*"
+  },
+  "devDependencies": {
+    "@colony-harness/controlplane-mock-adapter": "workspace:*",
+    "@colony-harness/controlplane-sdk-adapter": "workspace:*"
+  }
+}

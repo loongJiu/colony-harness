@@ -47,6 +47,8 @@ pnpm --filter @colony-harness/example-basic-agent dev
 pnpm --filter @colony-harness/example-memory-agent dev
 ```
 
+需要完整步骤、输出讲解和报错排查，请看 [examples-running.md](./examples-running.md)。
+
 ## 4. 开发时常用命令
 
 ```bash

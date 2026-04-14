@@ -58,9 +58,13 @@ const mapRow = (row: MemoryRow): MemoryEntry => ({
 })
 
 export class SqliteMemoryAdapter implements MemoryAdapter {
-  private readonly dbPromise = this.init()
+  private readonly dbPromise: ReturnType<SqliteMemoryAdapter['init']>
+  private readonly databasePath: string
 
-  constructor(private readonly databasePath = './data/colony-memory.sqlite') {}
+  constructor(databasePath = './data/colony-memory.sqlite') {
+    this.databasePath = databasePath
+    this.dbPromise = this.init()
+  }
 
   private async init() {
     const db = await open({

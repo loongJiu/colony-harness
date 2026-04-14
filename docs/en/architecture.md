@@ -35,3 +35,23 @@ Provide a minimal but production-oriented agent runtime loop:
 - `@colony-harness/llm-gemini`
 - `@colony-harness/tools-builtin`
 - `@colony-harness/evals`
+- `@colony-harness/controlplane-contract`
+- `@colony-harness/controlplane-mock-adapter`
+- `@colony-harness/controlplane-runtime`
+- `@colony-harness/controlplane-sdk-adapter`
+- `@colony-harness/provider-contract-tests`
+
+## OTel / OpenInference semantics
+
+`@colony-harness/trace-otel` exports key semantic fields to keep traces portable across observability backends:
+
+- OpenInference: `openinference.span.kind` (`AGENT` / `CHAIN` / `TOOL`)
+- Session identity: `session.id`, `user.id`
+- IO payloads: `input.value`, `output.value` (plus `*.mime_type`)
+- Runtime metrics: `colony.*` attributes (loop/tool/tokens)
+
+## Evolution direction
+
+- Keep core runtime decoupled from control-plane SDK internals
+- Use adapter packages for Queen integration paths
+- Enforce release quality via provider contract tests + eval gate

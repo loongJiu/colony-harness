@@ -43,3 +43,5 @@ pnpm typecheck
 pnpm test
 pnpm docs:build
 ```
+
+For step-by-step example runtime guidance and troubleshooting, see [Running the Examples](./examples-running.md).

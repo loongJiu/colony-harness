@@ -9,6 +9,10 @@
 - `containsScorer()`
 - `regexScorer()`
 - `numericRangeScorer()`
+- `llmJudgeScorer()`
+- `safetyScorer()`
+- `latencyScorer()`
+- `evaluateGate()`
 
 ## Quick example
 
@@ -26,3 +30,14 @@ const report = await runEvalSuite({
 
 - `results[]` per-case output
 - `summary` with pass rate and average scores
+
+## Release gate script
+
+Built-in command:
+
+```bash
+pnpm eval:gate
+```
+
+Default dataset: `evals/baseline-regression.dataset.json`  
+Generated report: `reports/eval-gate-report.json`

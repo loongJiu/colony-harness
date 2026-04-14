@@ -16,6 +16,13 @@ interface AnthropicMessage {
   content: string
 }
 
+const normalizeStopReason = (reason: string | null | undefined): ModelResponse['stopReason'] => {
+  if (!reason || reason === 'end_turn' || reason === 'stop_sequence') return 'completed'
+  if (reason === 'tool_use') return 'tool_calls'
+  if (reason === 'max_tokens') return 'max_tokens'
+  return 'unknown'
+}
+
 const splitSystem = (messages: ModelRequest['messages']): {
   system: string
   conversation: AnthropicMessage[]
@@ -99,6 +106,7 @@ export class AnthropicProvider implements LLMProvider {
           | { type: 'text'; text: string }
           | { type: 'tool_use'; id: string; name: string; input: unknown }
         >
+        stop_reason?: string | null
         usage?: {
           input_tokens?: number
           output_tokens?: number
@@ -123,6 +131,7 @@ export class AnthropicProvider implements LLMProvider {
 
       return {
         content: text,
+        stopReason: normalizeStopReason(data.stop_reason),
         toolCalls,
         usage: {
           inputTokens: data.usage?.input_tokens ?? 0,

@@ -46,6 +46,7 @@ MEMORY_BACKEND=sqlite pnpm --filter @colony-harness/example-memory-agent dev
 
 ## 5. Next
 
+- Full example run guide: [Running the Examples](./examples-running.md)
 - Provider/env setup: [Environment Variables](./environment-variables.md)
 - Runtime internals: [Runtime Lifecycle](./runtime-lifecycle.md)
 - Security model: [Guardrails & Tool Security](./guardrails-tool-security.md)

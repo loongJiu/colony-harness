@@ -87,10 +87,25 @@
 - `@colony-harness/llm-gemini`: Gemini provider
 - `@colony-harness/tools-builtin`: 内置工具集（HTTP/File/Command/Search/JSON/Template）
 - `@colony-harness/evals`: 评测执行器与 scorer（回归/对比）
+- `@colony-harness/controlplane-contract`: 控制面端口契约（接口与事件模型）
+- `@colony-harness/controlplane-mock-adapter`: 控制面 mock 适配器（本地联调/测试）
+- `@colony-harness/controlplane-runtime`: 控制面任务流与 harness 运行时桥接
+- `@colony-harness/controlplane-sdk-adapter`: 基于 colony-bee-sdk 的控制面接入适配器
+- `@colony-harness/provider-contract-tests`: OpenAI/Anthropic/Gemini 契约测试矩阵
+
+## OTel / OpenInference 语义
+
+`@colony-harness/trace-otel` 会在导出时对齐关键字段，便于接入通用可观测平台：
+
+- OpenInference：`openinference.span.kind`（`AGENT` / `CHAIN` / `TOOL`）
+- 会话字段：`session.id`、`user.id`
+- 输入输出字段：`input.value`、`output.value`（及 `*.mime_type`）
+- 运行统计：`colony.*` 指标（loop、tool、tokens）
 
 ## 后续演进方向
 
-- 与 `colony-bee-sdk` 深度运行时集成
+- 保持 core 与控制面解耦，通过 adapter 接入 `colony-bee-sdk` 或其他控制面
+- 发布门禁使用 eval baseline + scorer 阈值阻断（CI 内置 `pnpm eval:gate`）
 - 工作记忆自动压缩器（context compressor）
 - 多 trace exporter（OTEL、Langfuse）
 - 回归工作流与评测报告可视化（datasets + scorers + regression workflow）

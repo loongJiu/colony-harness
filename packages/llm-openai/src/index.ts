@@ -26,6 +26,13 @@ const normalizeContent = (content: unknown): string => {
   return ''
 }
 
+const normalizeStopReason = (reason: string | null | undefined): ModelResponse['stopReason'] => {
+  if (!reason || reason === 'stop') return 'completed'
+  if (reason === 'tool_calls') return 'tool_calls'
+  if (reason === 'length') return 'max_tokens'
+  return 'unknown'
+}
+
 export class OpenAIProvider implements LLMProvider {
   private readonly endpoint: string
 
@@ -81,6 +88,7 @@ export class OpenAIProvider implements LLMProvider {
           completion_tokens?: number
         }
         choices?: Array<{
+          finish_reason?: string | null
           message?: {
             content?: unknown
             tool_calls?: Array<{
@@ -104,6 +112,7 @@ export class OpenAIProvider implements LLMProvider {
 
       return {
         content,
+        stopReason: normalizeStopReason(data.choices?.[0]?.finish_reason),
         toolCalls,
         usage: {
           inputTokens: data.usage?.prompt_tokens ?? 0,

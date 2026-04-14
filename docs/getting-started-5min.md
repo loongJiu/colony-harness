@@ -56,6 +56,7 @@ MEMORY_BACKEND=sqlite pnpm --filter @colony-harness/example-memory-agent dev
 
 ## 6. 下一步建议
 
+- 想看完整示例运行讲解：看 [examples-running.md](./examples-running.md)
 - 想接真实模型：看 [environment-variables.md](./environment-variables.md)
 - 想理解运行机制：看 [runtime-lifecycle.md](./runtime-lifecycle.md)
 - 想看生产安全策略：看 [guardrails-tool-security.md](./guardrails-tool-security.md)

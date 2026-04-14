@@ -24,14 +24,24 @@ This page clarifies where safety controls should be applied.
 
 ## 4. Safer `run_command` baseline
 
+The built-in `run_command` now defaults to allowlist-first. Unknown commands are denied unless explicitly allowed.
+
 ```ts
 createRunCommandTool({
   allowShell: false,
   allowedCommands: ['node', 'pnpm'],
   blockedCommands: ['rm', 'mkfs', 'shutdown'],
+  approvalByRisk: {
+    requiredFrom: 'medium',
+    callback: async ({ command, riskLevel }) => {
+      return command === 'node' && riskLevel !== 'high'
+    },
+  },
   defaultTimeoutMs: 5000,
 })
 ```
+
+Successful executions include an `audit` payload (command/args/riskLevel/duration/cwd/timestamp) for governance logging.
 
 ## 5. Safer file tools baseline
 

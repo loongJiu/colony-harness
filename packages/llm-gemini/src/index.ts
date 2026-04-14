@@ -36,6 +36,13 @@ const toGeminiMessages = (messages: ModelRequest['messages']) => {
   }
 }
 
+const normalizeStopReason = (reason: string | null | undefined): ModelResponse['stopReason'] => {
+  if (!reason || reason === 'STOP') return 'completed'
+  if (reason === 'MAX_TOKENS') return 'max_tokens'
+  if (reason === 'SAFETY' || reason === 'RECITATION' || reason === 'BLOCKLIST') return 'unknown'
+  return 'unknown'
+}
+
 export class GeminiProvider implements LLMProvider {
   private readonly endpoint: string
 
@@ -88,6 +95,7 @@ export class GeminiProvider implements LLMProvider {
 
       const data = (await response.json()) as {
         candidates?: Array<{
+          finishReason?: string
           content?: {
             parts?: Array<{
               text?: string
@@ -124,6 +132,7 @@ export class GeminiProvider implements LLMProvider {
 
       return {
         content: text,
+        stopReason: normalizeStopReason(data.candidates?.[0]?.finishReason),
         toolCalls,
         usage: {
           inputTokens: data.usageMetadata?.promptTokenCount ?? 0,

@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest'
 import {
   calculatorTool,
   createReadFileTool,
+  createRunCommandTool,
   createWriteFileTool,
   jsonQueryTool,
   templateRenderTool,
@@ -77,5 +78,91 @@ describe('tools-builtin', () => {
 
     const diskContent = await readFile(path.join(dir, 'notes/a.txt'), 'utf8')
     expect(diskContent).toBe('hello from tools-builtin')
+  })
+
+  it('blocks non-allowlisted commands by default', async () => {
+    const runTool = createRunCommandTool()
+
+    await expect(
+      runTool.execute(
+        {
+          command: 'echo',
+          args: ['hello'],
+        },
+        fakeContext,
+      ),
+    ).rejects.toThrow('Command is not allowed: echo')
+  })
+
+  it('executes command when explicitly allowlisted', async () => {
+    const runTool = createRunCommandTool({
+      allowedCommands: ['node'],
+    })
+
+    const result = await runTool.execute(
+      {
+        command: 'node',
+        args: ['-e', 'process.stdout.write(\"ok\")'],
+      },
+      fakeContext,
+    )
+
+    expect(result).toMatchObject({
+      code: 0,
+      stdout: 'ok',
+    })
+    expect((result as { audit?: { riskLevel?: string } }).audit?.riskLevel).toBe('medium')
+  })
+
+  it('adds audit metadata and supports approval callback for risky commands', async () => {
+    const approvals: Array<{ command: string; riskLevel: string }> = []
+    const runTool = createRunCommandTool({
+      allowedCommands: ['node'],
+      approvalByRisk: {
+        requiredFrom: 'medium',
+        callback: async ({ command, riskLevel }) => {
+          approvals.push({ command, riskLevel })
+          return true
+        },
+      },
+    })
+
+    const result = await runTool.execute(
+      {
+        command: 'node',
+        args: ['-e', 'process.stdout.write(\"audit\")'],
+      },
+      fakeContext,
+    )
+
+    expect(approvals).toEqual([{ command: 'node', riskLevel: 'medium' }])
+    expect(result).toMatchObject({
+      code: 0,
+      stdout: 'audit',
+    })
+    expect((result as { audit?: { command?: string; riskLevel?: string } }).audit).toMatchObject({
+      command: 'node',
+      riskLevel: 'medium',
+    })
+  })
+
+  it('rejects command when approval callback denies execution', async () => {
+    const runTool = createRunCommandTool({
+      allowedCommands: ['node'],
+      approvalByRisk: {
+        requiredFrom: 'medium',
+        callback: async () => false,
+      },
+    })
+
+    await expect(
+      runTool.execute(
+        {
+          command: 'node',
+          args: ['-e', 'process.stdout.write(\"blocked\")'],
+        },
+        fakeContext,
+      ),
+    ).rejects.toThrow('Command approval rejected')
   })
 })

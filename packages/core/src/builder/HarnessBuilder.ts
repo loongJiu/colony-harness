@@ -2,7 +2,7 @@ import { defaultLoopConfig } from '../loop/types.js'
 import { defaultMemoryConfig, type MemoryAdapter, type MemoryManagerConfig } from '../memory/types.js'
 import { InMemoryAdapter } from '../memory/InMemoryAdapter.js'
 import { ToolRegistry } from '../tools/ToolRegistry.js'
-import type { ToolDefinition } from '../tools/types.js'
+import type { ApprovalCallback, ToolDefinition } from '../tools/types.js'
 import { TraceHub } from '../trace/TraceHub.js'
 import type { TraceExporter } from '../trace/types.js'
 import { Guardrails } from '../guard/Guardrails.js'
@@ -22,6 +22,7 @@ const defaultConfig = (): HarnessConfig => ({
 export class HarnessBuilder {
   private config: HarnessConfig = defaultConfig()
   private tools: ToolDefinition<any, any>[] = []
+  private toolApprovalCallback?: ApprovalCallback
   private memoryAdapter?: MemoryAdapter
   private traceExporters: TraceExporter[] = []
   private guards: Guard[] = []
@@ -34,6 +35,11 @@ export class HarnessBuilder {
 
   tool(...tools: ToolDefinition<any, any>[]): this {
     this.tools.push(...tools)
+    return this
+  }
+
+  toolApproval(callback: ApprovalCallback): this {
+    this.toolApprovalCallback = callback
     return this
   }
 
@@ -80,6 +86,9 @@ export class HarnessBuilder {
 
     const toolRegistry = new ToolRegistry()
     toolRegistry.registerMany(this.tools)
+    if (this.toolApprovalCallback) {
+      toolRegistry.setApprovalCallback(this.toolApprovalCallback)
+    }
 
     const memoryManager = new MemoryManager(this.memoryAdapter ?? new InMemoryAdapter(), this.config.memory)
     const tracer = new TraceHub(this.traceExporters)
