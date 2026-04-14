@@ -19,7 +19,7 @@
     "release:dry-run": "node scripts/release.mjs --dry-run",
     "check:core-boundary": "node scripts/check-core-boundary.mjs",
     "test": "turbo run test",
-    "eval:gate": "pnpm --filter @colony-harness/evals build && node scripts/eval-gate.mjs",
+    "eval:gate": "turbo run build --filter=colony-harness --filter=@colony-harness/tools-builtin --filter=@colony-harness/evals && node scripts/eval-gate.mjs",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint"
   },

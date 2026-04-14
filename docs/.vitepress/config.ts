@@ -6,21 +6,20 @@ const base =
 const socialLinks = [{ icon: 'github', link: 'https://github.com/loongJiu/colony-harness' }]
 
 const zhThemeConfig = {
-  siteTitle: 'colony-harness docs',
+  siteTitle: 'colony-harness',
   nav: [
-    { text: '开始', link: '/getting-started-5min' },
+    { text: '教程', link: '/tutorial' },
     { text: '概念', link: '/runtime-lifecycle' },
-    { text: '实战', link: '/cookbook-research-agent' },
     { text: 'API', link: '/api-reference' },
+    { text: '实战', link: '/cookbook-research-agent' },
     { text: '发布', link: '/release-workflow' },
   ],
   sidebar: [
     {
       text: '快速上手',
       items: [
-        { text: '文档首页', link: '/' },
+        { text: '渐进式教程', link: '/tutorial' },
         { text: '5 分钟跑通', link: '/getting-started-5min' },
-        { text: 'Quickstart', link: '/quickstart' },
         { text: '示例运行指南', link: '/examples-running' },
         { text: '环境变量参考', link: '/environment-variables' },
         { text: '常见问题排查', link: '/troubleshooting' },
@@ -31,9 +30,16 @@ const zhThemeConfig = {
       items: [
         { text: '运行生命周期', link: '/runtime-lifecycle' },
         { text: 'Guardrails 与工具安全', link: '/guardrails-tool-security' },
-        { text: 'Architecture', link: '/architecture' },
+        { text: '架构总览', link: '/architecture' },
         { text: '双运行模式', link: '/controlplane-modes' },
         { text: '兼容矩阵', link: '/controlplane-compatibility-matrix' },
+      ],
+    },
+    {
+      text: 'API 与工具',
+      items: [
+        { text: 'API Reference', link: '/api-reference' },
+        { text: 'Evals 评测体系', link: '/evals' },
       ],
     },
     {
@@ -41,8 +47,6 @@ const zhThemeConfig = {
       items: [
         { text: 'Cookbook: 研究助手 Agent', link: '/cookbook-research-agent' },
         { text: 'Advanced Guide', link: '/advanced-guide' },
-        { text: 'API Reference', link: '/api-reference' },
-        { text: 'Evals', link: '/evals' },
       ],
     },
     {
@@ -51,6 +55,9 @@ const zhThemeConfig = {
         { text: 'Changelog Guidelines', link: '/changelog-guidelines' },
         { text: 'Release Workflow', link: '/release-workflow' },
         { text: 'ADR: 边界冻结', link: '/adr/0001-harness-controlplane-boundary' },
+        { text: 'ADR: 工具治理', link: '/adr/0002-tool-governance-safety' },
+        { text: 'ADR: 评测门禁', link: '/adr/0003-eval-gate-release-quality' },
+        { text: 'ADR: 多 Provider 契约', link: '/adr/0004-multi-provider-contract' },
       ],
     },
   ],
@@ -78,21 +85,20 @@ const zhThemeConfig = {
 }
 
 const enThemeConfig = {
-  siteTitle: 'colony-harness docs',
+  siteTitle: 'colony-harness',
   nav: [
-    { text: 'Start', link: '/en/getting-started-5min' },
+    { text: 'Tutorial', link: '/en/tutorial' },
     { text: 'Concepts', link: '/en/runtime-lifecycle' },
-    { text: 'Cookbook', link: '/en/cookbook-research-agent' },
     { text: 'API', link: '/en/api-reference' },
+    { text: 'Cookbook', link: '/en/cookbook-research-agent' },
     { text: 'Release', link: '/en/release-workflow' },
   ],
   sidebar: [
     {
       text: 'Getting Started',
       items: [
-        { text: 'Docs Home', link: '/en/' },
+        { text: 'Progressive Tutorial', link: '/en/tutorial' },
         { text: 'Get Running in 5 Minutes', link: '/en/getting-started-5min' },
-        { text: 'Quickstart', link: '/en/quickstart' },
         { text: 'Running the Examples', link: '/en/examples-running' },
         { text: 'Environment Variables', link: '/en/environment-variables' },
         { text: 'Troubleshooting', link: '/en/troubleshooting' },
@@ -109,12 +115,17 @@ const enThemeConfig = {
       ],
     },
     {
+      text: 'API & Tools',
+      items: [
+        { text: 'API Reference', link: '/en/api-reference' },
+        { text: 'Evals', link: '/en/evals' },
+      ],
+    },
+    {
       text: 'Cookbook & Reference',
       items: [
         { text: 'Research Agent Cookbook', link: '/en/cookbook-research-agent' },
         { text: 'Advanced Guide', link: '/en/advanced-guide' },
-        { text: 'API Reference', link: '/en/api-reference' },
-        { text: 'Evals', link: '/en/evals' },
       ],
     },
     {
@@ -123,6 +134,9 @@ const enThemeConfig = {
         { text: 'Changelog Guidelines', link: '/en/changelog-guidelines' },
         { text: 'Release Workflow', link: '/en/release-workflow' },
         { text: 'ADR: Boundary Freeze', link: '/adr/0001-harness-controlplane-boundary' },
+        { text: 'ADR: Tool Governance', link: '/adr/0002-tool-governance-safety' },
+        { text: 'ADR: Eval Gate', link: '/adr/0003-eval-gate-release-quality' },
+        { text: 'ADR: Multi-Provider', link: '/adr/0004-multi-provider-contract' },
       ],
     },
   ],
@@ -154,7 +168,10 @@ export default {
   description: 'Production-ready AI agent harness documentation',
   base,
   lang: 'zh-CN',
-  head: [['meta', { name: 'theme-color', content: '#0f766e' }]],
+  head: [
+    ['meta', { name: 'theme-color', content: '#0f766e' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}favicon.svg` }],
+  ],
   cleanUrls: true,
   lastUpdated: true,
   locales: {

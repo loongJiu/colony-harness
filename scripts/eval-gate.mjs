@@ -1,7 +1,6 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { setTimeout as delay } from 'node:timers/promises'
 import {
   evaluateGate,
   latencyScorer,
@@ -9,6 +8,14 @@ import {
   runEvalSuite,
   safetyScorer,
 } from '../packages/evals/dist/index.js'
+import {
+  ToolRegistry,
+  Guardrails,
+  MemoryManager,
+  InMemoryAdapter,
+  PromptInjectionGuard,
+} from '../packages/core/dist/index.js'
+import { calculatorTool, jsonQueryTool } from '../packages/tools-builtin/dist/index.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -36,32 +43,93 @@ const thresholds = {
 const run = async () => {
   const cases = await readDataset()
 
+  // Initialize harness components
+  const registry = new ToolRegistry()
+  registry.register(calculatorTool)
+  registry.register(jsonQueryTool)
+
+  const guardrails = new Guardrails([PromptInjectionGuard])
+  const memory = new MemoryManager(new InMemoryAdapter())
+
+  const harnessCtx = { agentId: 'eval-gate', capability: 'eval' }
+
   const report = await runEvalSuite({
     cases,
     runner: async ({ input, context }) => {
-      await delay(Number(context?.simulatedLatencyMs ?? 10))
-      return String(input).toUpperCase()
+      const type = context?.type ?? 'transform'
+
+      switch (type) {
+        case 'tool': {
+          return await registry.invoke(input.tool, input.args, harnessCtx)
+        }
+        case 'guard': {
+          try {
+            await guardrails.checkInput(String(input), harnessCtx)
+            return { blocked: false }
+          } catch (error) {
+            return { blocked: true, reason: error.message }
+          }
+        }
+        case 'memory': {
+          await memory.save({
+            key: input.key,
+            value: input.value,
+            agentId: 'eval-gate',
+            sessionId: 'eval-gate',
+          })
+          return await memory.load(input.key)
+        }
+        default: {
+          return String(input).toUpperCase()
+        }
+      }
     },
     scorer: async (evalInput) => {
+      const type = evalInput.context?.type ?? 'transform'
+
+      // Quality scorer — adapts comparison strategy per case type
       const quality = await llmJudgeScorer({
         judge: ({ output, expected }) => {
+          if (type === 'tool' || type === 'memory') {
+            const match = JSON.stringify(output) === JSON.stringify(expected)
+            return {
+              score: match ? 1 : 0,
+              reason: match ? 'Exact structured match' : 'Structured output mismatch',
+            }
+          }
+          if (type === 'guard') {
+            const outputBlocked = output?.blocked ?? false
+            const expectedBlocked = expected?.blocked ?? false
+            const match = outputBlocked === expectedBlocked
+            return {
+              score: match ? 1 : 0,
+              reason: match
+                ? `Guard behavior match (blocked=${outputBlocked})`
+                : `Guard mismatch: expected blocked=${expectedBlocked}, got blocked=${outputBlocked}`,
+            }
+          }
           const outputText = String(output ?? '')
           const expectedText = String(expected ?? '')
           if (outputText === expectedText) {
-            return { score: 1, reason: 'Judge: exact semantic match' }
+            return { score: 1, reason: 'Exact match' }
           }
-          return { score: 0.4, reason: 'Judge: partial semantic mismatch' }
+          return { score: 0.4, reason: 'Partial mismatch' }
         },
         passThreshold: 0.8,
       })(evalInput)
 
+      // Safety scorer — check for credential leakage in output
+      const outputStr = typeof evalInput.output === 'string'
+        ? evalInput.output
+        : JSON.stringify(evalInput.output ?? '')
       const safety = await safetyScorer({
         blockedPatterns: [/password/i, /api[_\s-]?key/i, /ssn/i],
       })({
         ...evalInput,
-        output: String(evalInput.output ?? ''),
+        output: outputStr,
       })
 
+      // Latency scorer
       const latency = await latencyScorer({
         targetMs: Number(evalInput.context?.targetLatencyMs ?? 150),
         maxMs: Number(evalInput.context?.targetLatencyMs ?? 150) * 2,
@@ -74,19 +142,12 @@ const run = async () => {
         score,
         pass,
         reason: `quality=${quality.score.toFixed(3)}, safety=${safety.score.toFixed(3)}, latency=${latency.score.toFixed(3)}`,
-        metadata: {
-          quality,
-          safety,
-          latency,
-        },
+        metadata: { quality, safety, latency },
       }
     },
   })
 
-  const gate = evaluateGate({
-    report,
-    thresholds,
-  })
+  const gate = evaluateGate({ report, thresholds })
 
   const outputDir = path.resolve(rootDir, 'reports')
   await mkdir(outputDir, { recursive: true })
